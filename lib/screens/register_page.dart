@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:login/screens/signin_page.dart';
+import '../screens/screen.dart';
 import '../widgets/widget.dart';
 import '../constants.dart';
 
