@@ -1,3 +1,4 @@
+import 'package:Ciellie/screens/gps.dart';
 import 'package:Ciellie/screens/screen.dart';
 import 'package:flutter/material.dart';
 
@@ -72,6 +73,15 @@ class NavDrawer extends StatelessWidget {
         Navigator.of(context).push(MaterialPageRoute(builder: (context) => MyTeamsPage(),
       ));
       },
+      ),
+      ListTile(
+        leading: const Icon(Icons.map_outlined),
+        title: const Text("Maps"),
+        onTap: () {
+          Navigator.pop(context);
+          Navigator.of(context).push(MaterialPageRoute(builder: (context) => MapScreen(),
+          ));
+        },
       ),
       const Divider(color: Colors.black54,),
       ListTile(

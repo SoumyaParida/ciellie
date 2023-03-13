@@ -27,6 +27,7 @@ apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
     compileSdkVersion flutter.compileSdkVersion
+    minSdkVersion 20
     ndkVersion flutter.ndkVersion
 
     compileOptions {

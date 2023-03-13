@@ -8,7 +8,7 @@ class MyHomePage extends StatelessWidget {
       drawer: NavDrawer(),
       appBar: AppBar(
         title: Text('Surveys'),
-        backgroundColor: Colors.green,
+        backgroundColor: Colors.lightBlue,
       ),
       body: Center(
         child: Text('Side Menu Tutorial'),
