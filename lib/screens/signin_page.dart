@@ -104,7 +104,13 @@ class _SignInPageState extends State<SignInPage> {
                     ),
                     MyTextButton(
                       buttonName: 'Sign In',
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.push(
+                              context,
+                              CupertinoPageRoute(
+                                builder: (context) => MyHomePage(),
+                              ));
+                      },
                       bgColor: Colors.white,
                       textColor: Colors.black87,
                     ),
