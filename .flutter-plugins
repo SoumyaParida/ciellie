@@ -1,2 +1,6 @@
 # This is a generated file; do not edit or check into version control.
-flutter_native_splash=/home/soumya/.pub-cache/hosted/pub.dev/flutter_native_splash-2.2.19/
+flutter_native_splash=/Users/carsoncloud/.pub-cache/hosted/pub.dev/flutter_native_splash-2.2.19/
+flutter_plugin_android_lifecycle=/Users/carsoncloud/.pub-cache/hosted/pub.dev/flutter_plugin_android_lifecycle-2.0.9/
+google_maps_flutter=/Users/carsoncloud/.pub-cache/hosted/pub.dev/google_maps_flutter-2.2.5/
+google_maps_flutter_android=/Users/carsoncloud/.pub-cache/hosted/pub.dev/google_maps_flutter_android-2.4.9/
+google_maps_flutter_ios=/Users/carsoncloud/.pub-cache/hosted/pub.dev/google_maps_flutter_ios-2.2.1/
