@@ -4,6 +4,16 @@ import '../screens/screen.dart';
 import '../widgets/widget.dart';
 import '../constants.dart';
 
+import 'package:Ciellie/models/result.dart';
+import 'package:Ciellie/models/user.dart';
+
+import 'package:Ciellie/network/auth/authenticator.dart';
+//import 'package:Ciellie/screens/survey/list/survey_list_screen.dart';
+import 'package:Ciellie/util/context_utils.dart';
+import 'package:Ciellie/validate/validator.dart';
+import 'package:Ciellie/widgets/progress_button.dart';
+import 'package:Ciellie/util/alert_utils.dart';
+
 //import 'package:firebase_auth/firebase_auth.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -13,72 +23,16 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPageState extends State<RegisterPage> {
   bool passwordVisibility = true;
-  
-  /*String _name = "";
-  String _email = "";
-  String phonenumber = "";
-  String _password = "";
+  final formKey = GlobalKey<FormState>();
 
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
+  //static const routeName = "/auth/signup";
 
-  checkAuthincation() async {
-    _auth.onAuthStateChanged.listen((user) {
-      if (user != "") {
-        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) =>  MyHomePage()));
-        //Navigator.pushReplacementNamed(context, '/home');
-      }
-    });
-  }
+  final authenticator = Authenticator.instance;
 
-  
-
-  @override
-  void initState() {
-   
-    super.initState();
-    this.checkAuthincation();
-  }
-  
-  register() async {
-    if (_formkey.currentState.validate()) {
-      _formkey.currentState.save();
-
-      try {
-        AuthResult user = await _auth.createUserWithEmailAndPassword(
-          email: _email,
-          password: _password,
-        );
-        if (user != "") {
-          UserUpdateInfo userUpdateInfo = UserUpdateInfo();
-          userUpdateInfo.displayName = _name;
-          user.user.updateProfile(userUpdateInfo);
-        }
-      } catch (e) {
-        showError(e);
-      }
-    }
-  }
-
-  showError(String errormessage) {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('Error'),
-            content: Text(errormessage),
-            actions: <Widget>[
-              FlatButton(
-                child: Text('Ok'),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              )
-            ],
-          );
-        });
-  }
-  */
+  final usernameController = TextEditingController();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+  final passwordRepeatController = TextEditingController();
   
   navigateToSignInScreen() {
     Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) =>  SignInPage()));
@@ -102,55 +56,153 @@ class _RegisterPageState extends State<RegisterPage> {
         ),
       ),
       body: SafeArea(
-        child: CustomScrollView(
-          slivers: [
+        child: buildBody(context),
+      ),
+    );
+  }
+
+  Widget buildBody(BuildContext context) {
+    return CustomScrollView(
+      slivers: [
             SliverFillRemaining(
               hasScrollBody: false,
               child: Padding(
-                padding: const EdgeInsets.symmetric(
+                  padding: const EdgeInsets.symmetric(
                   horizontal: 20,
                 ),
-                child: Column(
+            child: Column(
                   children: [
                     Flexible(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
+            child: Form(
+              key: formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                Text(
                             "Register",
                             style: kHeadline,
                           ),
-                          Text(
-                            "\nCreate new account to get started.",
-                            style: kBodyText2,
-                          ),
-                          SizedBox(
+                Text(
+                  "\nCreate new account to get started.",
+                  style: kBodyText2,
+                ),
+                SizedBox(
                             height: 50,
                           ),
-                          MyTextField(
-                            hintText: 'Name',
-                            inputType: TextInputType.name,
-                          ),
-                          MyTextField(
-                            hintText: 'Email',
-                            inputType: TextInputType.emailAddress,
-                          ),
-                          MyTextField(
-                            hintText: 'Phone',
-                            inputType: TextInputType.phone,
-                          ),
-                          MyPasswordField(
-                            isPasswordVisible: passwordVisibility,
-                            onTap: () {
-                              setState(() {
-                                passwordVisibility = !passwordVisibility;
-                              });
-                            },
-                          )
-                        ],
-                      ),
+                TextFormField(
+                  style: kBodyText.copyWith(
+                    color: Colors.white,
+                  ),
+                  maxLength: Validator.MAX_USERNAME_LENGTH,
+                  validator: Validator.validateUsername,
+                  controller: usernameController,
+                  decoration: InputDecoration(
+                  contentPadding: EdgeInsets.all(20),
+                  hintText: "USER NAME",
+                  hintStyle: kBodyText,
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.grey,
+                      width: 1,
                     ),
-                    Row(
+                    borderRadius: BorderRadius.circular(18),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.white,
+                      width: 1,
+                    ),
+                    borderRadius: BorderRadius.circular(18),
+                  ),
+                  ),
+                ),
+                  
+                SizedBox(height: 16),
+                TextFormField(
+                  style: kBodyText.copyWith(
+                    color: Colors.white,
+                  ),
+                  validator: Validator.validateEmail,
+                  controller: emailController,
+                  decoration: InputDecoration(
+                      contentPadding: EdgeInsets.all(20),
+                      hintText: "E-Mail Address",
+                      hintStyle: kBodyText,
+                      enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.grey,
+                      width: 1,
+                    ),
+                    borderRadius: BorderRadius.circular(18),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.white,
+                      width: 1,
+                    ),
+                    borderRadius: BorderRadius.circular(18),
+                  ),
+                  ),
+                ),
+                SizedBox(height: 16),
+                TextFormField(
+                  style: kBodyText.copyWith(
+                    color: Colors.white,
+                  ),
+                  validator: Validator.validatePassword,
+                  controller: passwordController,
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    contentPadding: EdgeInsets.all(20),                 
+                    hintText: "Password",
+                    hintStyle: kBodyText,
+                    enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.grey,
+                      width: 1,
+                    ),
+                    borderRadius: BorderRadius.circular(18),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.white,
+                      width: 1,
+                    ),
+                    borderRadius: BorderRadius.circular(18),
+                  ),
+                  ),
+                ),
+                SizedBox(height: 16),
+                TextFormField(
+                  style: kBodyText.copyWith(
+                    color: Colors.white,
+                  ),
+                  validator: (value) => Validator.validatePasswordRepeat(
+                      passwordController.text, value),
+                  controller: passwordRepeatController,
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    contentPadding: EdgeInsets.all(20),
+                    hintText: "Repeat Password",
+                    hintStyle: kBodyText,
+                    enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.grey,
+                      width: 1,
+                    ),
+                    borderRadius: BorderRadius.circular(18),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.white,
+                      width: 1,
+                    ),
+                    borderRadius: BorderRadius.circular(18),
+                  ),
+                  ),
+                ),
+                SizedBox(height: 20),
+                Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
@@ -175,28 +227,61 @@ class _RegisterPageState extends State<RegisterPage> {
                         ),
                       ],
                     ),
-                    SizedBox(
+                SizedBox(
                       height: 20,
                     ),
-                    MyTextButton(
-                      buttonName: 'Register',
-                      onTap: () {
-                        Navigator.push(
-                              context,
-                              CupertinoPageRoute(
-                                builder: (context) => MyHomePage(),
-                              ));
-                      },
-                      bgColor: Colors.white,
-                      textColor: Colors.black87,
-                    )
-                  ],
+                Container(
+                height: 60,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(18),
                 ),
-              ),
+                child:TextButton(
+                  style: ButtonStyle(
+                    overlayColor: MaterialStateProperty.resolveWith(
+                      (states) => Colors.black12,
+                    ),
+                  ),
+                  onPressed: () => onClickButton(context),
+                  child: Text(
+                    "Register",
+                    style: kButtonText.copyWith(color: Colors.black87),
+                  ),
+                ),
+                ),
+                SizedBox(height: context.height(0.05)),
+              ],
             ),
-          ],
+          ),
+                    ),
+                  ],
+            ),
         ),
       ),
+      ],
     );
+  }
+
+  Future<void> onClickButton(BuildContext context) async {
+    if (formKey.currentState!.validate()) {
+      await createAccount(context);
+    }
+  }
+
+  Future<void> createAccount(BuildContext context) async {
+    final result = await authenticator.signup(usernameController.text.trim(),
+        emailController.text.trim(), passwordController.text);
+    if (result is Success<User>) {
+      final loggedInUser = result.data;
+      onSignup(context, loggedInUser);
+    } else {
+      context.alertError(result);
+    }
+  }
+
+  void onSignup(BuildContext context, User user) {
+    print(user);
+    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) =>  MyHomePage()));
   }
 }

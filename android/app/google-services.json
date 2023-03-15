@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "854485873054",
+    "project_id": "ciellie",
+    "storage_bucket": "ciellie.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:854485873054:android:ff4fbcea4a53508e1d268f",
+        "android_client_info": {
+          "package_name": "com.example.Ciellie"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "854485873054-6689j5fgruqe7isv3orsjpv2nedn6itc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBUprd8Ae-eF9JuiQoHP6eZIbdJY0Z8ilM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "854485873054-6689j5fgruqe7isv3orsjpv2nedn6itc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
