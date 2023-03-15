@@ -30,7 +30,6 @@ apply plugin: 'com.google.gms.google-services'
 
 android {
     compileSdkVersion flutter.compileSdkVersion
-    minSdkVersion 20
     ndkVersion flutter.ndkVersion
 
     compileOptions {
@@ -55,7 +54,7 @@ android {
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
-        minSdkVersion 19
+        minSdkVersion 21
         // Enabling multidex support.
         multiDexEnabled true
     }
