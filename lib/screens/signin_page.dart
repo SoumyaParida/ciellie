@@ -130,7 +130,7 @@ class _SignInPageState extends State<SignInPage> {
                             );
                           },
                         child: Text(
-                          "Sign In",
+                          "Register",
                           style: kBodyText.copyWith(
                             color: Colors.white,
                           ),
