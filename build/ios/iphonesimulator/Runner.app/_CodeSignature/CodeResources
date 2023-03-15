@@ -46,7 +46,7 @@
 		</data>
 		<key>Frameworks/App.framework/App</key>
 		<data>
-		C/4FYkcsr0UZ383wWiDu1qj5CLQ=
+		X4OoDHsF9FEtp48/DaDYjrZ8KSU=
 		</data>
 		<key>Frameworks/App.framework/Info.plist</key>
 		<data>
@@ -54,7 +54,7 @@
 		</data>
 		<key>Frameworks/App.framework/_CodeSignature/CodeResources</key>
 		<data>
-		eyrFD6QmpWndJ3iShd9UAHKZYyo=
+		JxljpeaWBuVlVKwnoFI4SS24WQc=
 		</data>
 		<key>Frameworks/App.framework/flutter_assets/AssetManifest.json</key>
 		<data>
@@ -66,7 +66,7 @@
 		</data>
 		<key>Frameworks/App.framework/flutter_assets/NOTICES.Z</key>
 		<data>
-		uGQtOPypVnWwYflMnxWM4ekyd4I=
+		D0kV36yVjHJ7z94HT3cxITicr+c=
 		</data>
 		<key>Frameworks/App.framework/flutter_assets/assets/images/avatar.png</key>
 		<data>
@@ -102,7 +102,7 @@
 		</data>
 		<key>Frameworks/App.framework/flutter_assets/kernel_blob.bin</key>
 		<data>
-		mpmgP6igOcI9SO50GtPW4hW+jTQ=
+		ruxFy5VkjceANORvUwHb85bX1No=
 		</data>
 		<key>Frameworks/App.framework/flutter_assets/packages/cupertino_icons/assets/CupertinoIcons.ttf</key>
 		<data>
@@ -200,6 +200,18 @@
 		<data>
 		iqxdhxDOeG6GKBcMhgGCL00SLGw=
 		</data>
+		<key>Frameworks/camera_avfoundation.framework/Info.plist</key>
+		<data>
+		nCJm2lhmF/6QrrzSF7xPGq4smV0=
+		</data>
+		<key>Frameworks/camera_avfoundation.framework/_CodeSignature/CodeResources</key>
+		<data>
+		7ugHy5c0B9pD0aIvVY9ABCr78IY=
+		</data>
+		<key>Frameworks/camera_avfoundation.framework/camera_avfoundation</key>
+		<data>
+		vOoQ5NA/BP046ti9YacZ6UebSsk=
+		</data>
 		<key>Frameworks/flutter_native_splash.framework/Info.plist</key>
 		<data>
 		7LuNbzOMyw9YfQCxbSEjEXE+Pk8=
@@ -210,7 +222,31 @@
 		</data>
 		<key>Frameworks/flutter_native_splash.framework/flutter_native_splash</key>
 		<data>
-		b6ayILQPx8wzW6Oc3Xepb5Zoxz8=
+		roeqmnojUdYmuvXyA/Mg9wQ/GHQ=
+		</data>
+		<key>Frameworks/image_picker_ios.framework/Info.plist</key>
+		<data>
+		dmYmOH6SNhqx6ZXSmhIUAxGpqxQ=
+		</data>
+		<key>Frameworks/image_picker_ios.framework/_CodeSignature/CodeResources</key>
+		<data>
+		euhdznCqbDRIZ6tVj1mVPvK+P6M=
+		</data>
+		<key>Frameworks/image_picker_ios.framework/image_picker_ios</key>
+		<data>
+		vTtkIK33+OclT5CKv9gCiW6skZs=
+		</data>
+		<key>Frameworks/path_provider_foundation.framework/Info.plist</key>
+		<data>
+		XwmV1NXddfhYerBTlsXHpEgCV8o=
+		</data>
+		<key>Frameworks/path_provider_foundation.framework/_CodeSignature/CodeResources</key>
+		<data>
+		J5zJ9HKafakKwbZLHBjHvTLNxVk=
+		</data>
+		<key>Frameworks/path_provider_foundation.framework/path_provider_foundation</key>
+		<data>
+		Leh6XCpaZ/WeaobhH0dur9Yu1tI=
 		</data>
 		<key>GoogleMaps.bundle/GMSCacheStorage.momd/Storage.mom</key>
 		<data>
@@ -1090,7 +1126,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			CaLc31ApMwn1xveS+Irm+jGdlxtag3Z5BaOidVxajcw=
+			1Ncxz/mccz0bV/8c3b5/sxzsw45KO72DOM/dc0++zX4=
 			</data>
 		</dict>
 		<key>Frameworks/App.framework/Info.plist</key>
@@ -1104,7 +1140,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			Af4DerTTTlzcaqr5aq1mgY6ZYYTAL5UgaALRypiRVD4=
+			qCRDbrQBzvW8PH+skbCmzQXbxsLiEJMHX3JKvI6yVdA=
 			</data>
 		</dict>
 		<key>Frameworks/App.framework/flutter_assets/AssetManifest.json</key>
@@ -1125,7 +1161,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			hlwS47kLgxAiSZrDaOkxCO+AMunCXNcd1VNWxq8apYE=
+			5Ir51rreFEAzoHOynaW/YUuFkmKl0NLO7orcUCqgiB8=
 			</data>
 		</dict>
 		<key>Frameworks/App.framework/flutter_assets/assets/images/avatar.png</key>
@@ -1188,7 +1224,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			aNmYqqXorvHSmvcis4UlzRs7EEBwITMY59MN/yQOMmo=
+			aTH597r5FbLQKObw6HQlVRNvLJ0KXz1fTKdlLlc8xrk=
 			</data>
 		</dict>
 		<key>Frameworks/App.framework/flutter_assets/packages/cupertino_icons/assets/CupertinoIcons.ttf</key>
@@ -1359,6 +1395,27 @@
 			d80FTlJMKYsTn7JmRt/E1O9oOh+k9tF0xR10Q3ZrKn4=
 			</data>
 		</dict>
+		<key>Frameworks/camera_avfoundation.framework/Info.plist</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			/iho4Yx+LEq/IevZQvjAb8ZlL8pRtUGQn2Q8Dtpr0QQ=
+			</data>
+		</dict>
+		<key>Frameworks/camera_avfoundation.framework/_CodeSignature/CodeResources</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			tdZPGQwDG/eL60iCzulxovNndArjz8xsXcDP9kMBzzs=
+			</data>
+		</dict>
+		<key>Frameworks/camera_avfoundation.framework/camera_avfoundation</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			2hWuGmIYuGzhUcagmq67DVyhXFNLMSPYairJyacZWd4=
+			</data>
+		</dict>
 		<key>Frameworks/flutter_native_splash.framework/Info.plist</key>
 		<dict>
 			<key>hash2</key>
@@ -1377,7 +1434,49 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			gs0kJnmtpZtNkjTuR9MCqdMP6wjViS+D4tDGoWcfdMY=
+			0d0FifdX/61P1EWH2mXV749VYqbGHo8NE21Xl27f3ts=
+			</data>
+		</dict>
+		<key>Frameworks/image_picker_ios.framework/Info.plist</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			Yt1Q3gwORUsJnAKrcBthLfb+f7u0BwPWsPFjghxEelE=
+			</data>
+		</dict>
+		<key>Frameworks/image_picker_ios.framework/_CodeSignature/CodeResources</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			+jEy5k3gkLPJiQxraUJ9xxDQ6lopJTvXuvczI13GUao=
+			</data>
+		</dict>
+		<key>Frameworks/image_picker_ios.framework/image_picker_ios</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			kQVMKMJ8TLKREX6cnyD2OChRQJCInfd2GZFYKC4naRU=
+			</data>
+		</dict>
+		<key>Frameworks/path_provider_foundation.framework/Info.plist</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			xxl2571wIdhmx9DR44qwE5GbZRakvesHfh6fzKtOe7s=
+			</data>
+		</dict>
+		<key>Frameworks/path_provider_foundation.framework/_CodeSignature/CodeResources</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			oOuDxsOKfblP4Pob8vrqmvEtXAacEnDICn6OGURk4I8=
+			</data>
+		</dict>
+		<key>Frameworks/path_provider_foundation.framework/path_provider_foundation</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			lzFEYpTTNXfb3YeLuSD1/x6ZNfTOseY9p3mjo+M/l9k=
 			</data>
 		</dict>
 		<key>GoogleMaps.bundle/GMSCacheStorage.momd/Storage.mom</key>
