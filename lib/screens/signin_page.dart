@@ -4,13 +4,25 @@ import '../constants.dart';
 import '../screens/screen.dart';
 import '../widgets/widget.dart';
 
+import 'package:Ciellie/models/result.dart';
+import 'package:Ciellie/models/user.dart';
+import 'package:Ciellie/network/auth/authenticator.dart';
+//import 'package:Ciellie/screens/survey/list/survey_list_screen.dart';
+import 'package:Ciellie/util/context_utils.dart';
+import 'package:Ciellie/widgets/progress_button.dart';
+import 'package:Ciellie/util/alert_utils.dart';
+
 class SignInPage extends StatefulWidget {
   @override
   _SignInPageState createState() => _SignInPageState();
 }
 
 class _SignInPageState extends State<SignInPage> {
-  bool isPasswordVisible = true;
+  final authenticator = Authenticator.instance;
+
+  final usernameOrEmailController = TextEditingController();
+  final passwordController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,52 +41,79 @@ class _SignInPageState extends State<SignInPage> {
         ),
       ),
       body: SafeArea(
-        //to make page scrollable
-        child: CustomScrollView(
-          reverse: true,
-          slivers: [
-            SliverFillRemaining(
-              hasScrollBody: false,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Flexible(
-                      fit: FlexFit.loose,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Welcome back.",
-                            style: kHeadline,
+        child: buildBody(context),
+      ),
+    );
+  }
+
+  Widget buildBody(BuildContext context) {
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+                  "Login",
+                  style: kHeadline,
+                ),
+                SizedBox(
+                            height: 50,
                           ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Text(
-                            "You've been missed!",
-                            style: kBodyText2,
-                          ),
-                          SizedBox(
-                            height: 60,
-                          ),
-                          MyTextField(
-                            hintText: 'Phone, email or username',
-                            inputType: TextInputType.text,
-                          ),
-                          MyPasswordField(
-                            isPasswordVisible: isPasswordVisible,
-                            onTap: () {
-                              setState(() {
-                                isPasswordVisible = !isPasswordVisible;
-                              });
-                            },
-                          ),
-                        ],
-                      ),
+            TextFormField(
+               style: kBodyText.copyWith(
+                    color: Colors.white,
+                  ),
+              controller: usernameOrEmailController,
+              decoration: InputDecoration(
+                  contentPadding: EdgeInsets.all(20),
+                  hintText: "USER NAME / EMAIL ADDRESS",
+                  hintStyle: kBodyText,
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.grey,
+                      width: 1,
                     ),
-                    Row(
+                    borderRadius: BorderRadius.circular(18),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.white,
+                      width: 1,
+                    ),
+                    borderRadius: BorderRadius.circular(18),
+                  ),
+                  ),
+            ),
+            SizedBox(height: 16),
+            TextFormField(
+              style: kBodyText.copyWith(
+                    color: Colors.white,
+                  ),
+              controller: passwordController,
+              obscureText: true,
+              decoration: InputDecoration(
+                contentPadding: EdgeInsets.all(20),                 
+                    hintText: "Password",
+                    hintStyle: kBodyText,
+                    enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.grey,
+                      width: 1,
+                    ),
+                    borderRadius: BorderRadius.circular(18),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                      color: Colors.white,
+                      width: 1,
+                    ),
+                    borderRadius: BorderRadius.circular(18),
+                  ),
+                  ),
+            ),
+            SizedBox(height: 20),
+                Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
@@ -90,37 +129,61 @@ class _SignInPageState extends State<SignInPage> {
                               ),
                             );
                           },
-                          child: Text(
-                            'Register',
-                            style: kBodyText.copyWith(
-                              color: Colors.white,
-                            ),
+                        child: Text(
+                          "Sign In",
+                          style: kBodyText.copyWith(
+                            color: Colors.white,
                           ),
-                        )
+                        ),
+                        ),
                       ],
                     ),
                     SizedBox(
                       height: 20,
                     ),
-                    MyTextButton(
-                      buttonName: 'Sign In',
-                      onTap: () {
-                        Navigator.push(
-                              context,
-                              CupertinoPageRoute(
-                                builder: (context) => MyHomePage(),
-                              ));
-                      },
-                      bgColor: Colors.white,
-                      textColor: Colors.black87,
-                    ),
-                  ],
+            Container(
+                height: 60,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(18),
                 ),
-              ),
-            ),
+                child:TextButton(
+                  style: ButtonStyle(
+                    overlayColor: MaterialStateProperty.resolveWith(
+                      (states) => Colors.black12,
+                    ),
+                  ),
+                  onPressed: () => onClickButton(context),
+                  child: Text(
+                    "Login",
+                    style: kButtonText.copyWith(color: Colors.black87),
+                  ),
+                ),
+                ),
+            SizedBox(height: context.height(.05)),
           ],
         ),
       ),
     );
   }
+
+  Future onClickButton(BuildContext context) async {
+    final result = await authenticator.login(
+        usernameOrEmailController.text.trim(), passwordController.text);
+    if (result is Success<User>) {
+      final loggedInUser = result.data;
+      onLogin(context, loggedInUser);
+    } else {
+      context.alertError(result);
+    }
+    //await Future.delayed(const Duration(seconds: 1), () {});
+  }
+
+  void onLogin(BuildContext context, User user) {
+    print(user);
+    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) =>  MyHomePage()));
+  }
+
 }
+

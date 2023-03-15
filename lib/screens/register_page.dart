@@ -64,18 +64,20 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget buildBody(BuildContext context) {
     return CustomScrollView(
       slivers: [
-      SliverFillRemaining(
+            SliverFillRemaining(
               hasScrollBody: false,
-        
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
+              child: Padding(
+                  padding: const EdgeInsets.symmetric(
                   horizontal: 20,
                 ),
-          child: Form(
-            key: formKey,
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+                  children: [
+                    Flexible(
+            child: Form(
+              key: formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
                 Text(
                             "Register",
                             style: kHeadline,
@@ -199,15 +201,62 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
                   ),
                 ),
-                SizedBox(height: 16),
-                ProgressButton(
+                SizedBox(height: 20),
+                Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "Already have an account? ",
+                          style: kBodyText,
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              CupertinoPageRoute(
+                                builder: (context) => SignInPage(),
+                              ),
+                            );
+                          },
+                        child: Text(
+                          "Sign In",
+                          style: kBodyText.copyWith(
+                            color: Colors.white,
+                          ),
+                        ),
+                        ),
+                      ],
+                    ),
+                SizedBox(
+                      height: 20,
+                    ),
+                Container(
+                height: 60,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(18),
+                ),
+                child:TextButton(
+                  style: ButtonStyle(
+                    overlayColor: MaterialStateProperty.resolveWith(
+                      (states) => Colors.black12,
+                    ),
+                  ),
                   onPressed: () => onClickButton(context),
-                  child: Text("Register"),
+                  child: Text(
+                    "Register",
+                    style: kButtonText.copyWith(color: Colors.black87),
+                  ),
+                ),
                 ),
                 SizedBox(height: context.height(0.05)),
               ],
             ),
           ),
+                    ),
+                  ],
+            ),
         ),
       ),
       ],

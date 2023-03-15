@@ -20,7 +20,7 @@ class EmailAlreadyInUseException implements AuthException {
   factory EmailAlreadyInUseException() => const EmailAlreadyInUseException._();
 
   @override
-  String get errorMessage => "E-posta adresine kayıtlı bir hesap bulunmakta!";
+  String get errorMessage => "There is an account registered to your e-mail address!";
 }
 
 class UsernameAlreadyInUseException implements AuthException {
@@ -29,7 +29,7 @@ class UsernameAlreadyInUseException implements AuthException {
   factory UsernameAlreadyInUseException() => const UsernameAlreadyInUseException._();
 
   @override
-  String get errorMessage => "Kullanıcı adına kayıtlı bir hesap bulunmakta!";
+  String get errorMessage => "There is an account registered to the username!";
 }
 
 class WeakPasswordException implements AuthException {
@@ -38,7 +38,7 @@ class WeakPasswordException implements AuthException {
   factory WeakPasswordException() => const WeakPasswordException._();
 
   @override
-  String get errorMessage => "Şifre çok zayıf!";
+  String get errorMessage => "Password too weak!";
 }
 
 class UserNotFoundException implements AuthException {
@@ -47,7 +47,7 @@ class UserNotFoundException implements AuthException {
   factory UserNotFoundException() => const UserNotFoundException._();
 
   @override
-  String get errorMessage => "Kullanıcı bulunamadı!";
+  String get errorMessage => "User not found";
 }
 
 class WrongPasswordException implements AuthException {
@@ -56,7 +56,7 @@ class WrongPasswordException implements AuthException {
   factory WrongPasswordException() => const WrongPasswordException._();
 
   @override
-  String get errorMessage => "Hatalı şifre!";
+  String get errorMessage => "Wrong password!";
 }
 
 class TooManyRequestsException implements AuthException {
@@ -65,5 +65,5 @@ class TooManyRequestsException implements AuthException {
   factory TooManyRequestsException() => const TooManyRequestsException._();
 
   @override
-  String get errorMessage => "Bu hesaba çok sayıda istek yapıldı!";
+  String get errorMessage => "Too many requests have been made to this account!";
 }
