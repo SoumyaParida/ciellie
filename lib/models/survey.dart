@@ -2,11 +2,19 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:Ciellie/models/user.dart';
 
 class Survey {
-  final String id;
+  /*final String id;
   final String name;
   final User creator;
   final DateTime createdAt;
-  final int totalVoteCount;
+  final int totalVoteCount;*/
+
+  String? _name;
+  String? _email;
+  String? _phoneNumber;
+  String? _address;
+  String? _propertyType;
+  User creator;
+  final String id;
 
   Survey(this.id, this.name, this.creator, this.createdAt, this.totalVoteCount);
 

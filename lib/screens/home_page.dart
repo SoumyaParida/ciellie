@@ -1,6 +1,7 @@
 import 'package:Ciellie/screens/survey_details.dart';
 import 'package:flutter/material.dart';
 import '../widgets/widget.dart';
+import '../screens/screen.dart';
 
 class MyHomePage extends StatelessWidget
 {
@@ -22,7 +23,8 @@ class MyHomePage extends StatelessWidget
       onPressed: () {
         Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => SurveyDetails()));
+            //MaterialPageRoute(builder: (context) => SurveyDetails()));
+            MaterialPageRoute(builder: (context) => SurveyListScreen()));
       },
       child: Icon(Icons.add),
       ),
