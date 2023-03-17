@@ -17,7 +17,7 @@ class MyHomePage extends StatefulWidget
 
 class _MyHomePageScreenState extends State<MyHomePage> {
   final dbHelper = DbHelper.instance;
-  late User user;
+  User? user;
   late SharedPrefs sharedPrefs;
   var isInitialDataFetched = false;
 
@@ -27,8 +27,9 @@ class _MyHomePageScreenState extends State<MyHomePage> {
     SharedPrefs.getInstance().then((prefs) {
       sharedPrefs = prefs;
       user = sharedPrefs.getUser()!;
+      print("user: $user");
       setState(() => isInitialDataFetched = true);
-      super.initState();
+      //super.initState();
     });
   }
 
@@ -37,9 +38,12 @@ class _MyHomePageScreenState extends State<MyHomePage> {
   //var isInitialDataFetched = false;
   Widget build(BuildContext context) {
     //SharedPrefs sharedPrefs = dbHelper.
-    
-    return Scaffold(
-      drawer: NavDrawer(user: user),
+    //var userData = widget.user;
+    //print("user inside: $user");
+    //var uservalue = this.user ?? '';
+
+    return Scaffold(  
+      drawer: NavDrawer(user: this.user),
       appBar: AppBar(
         title: Text('Surveys'),
         backgroundColor: Colors.lightBlue,

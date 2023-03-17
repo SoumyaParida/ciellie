@@ -4,9 +4,10 @@ import 'package:Ciellie/screens/screen.dart';
 import 'package:flutter/material.dart';
 
 import 'package:Ciellie/network/prefs/shared_prefs.dart';
+import 'package:Ciellie/network/auth/authenticator.dart';
 
 class NavDrawer extends StatefulWidget {
-  final User user;
+  final User? user;
   const NavDrawer({Key? key, required this.user}) : super(key: key);
   //const NavDrawer({Key? key}) : super(key: key);
   
@@ -14,9 +15,10 @@ class NavDrawer extends StatefulWidget {
   _NavDrawerScreenState createState() => _NavDrawerScreenState();
 }
 class _NavDrawerScreenState extends State<NavDrawer> {
+  final authenticator = Authenticator.instance;
   @override
   Widget build(BuildContext context) {
-    User userData = widget.user;
+    User userData = widget.user!;
     return Drawer(
       child: SingleChildScrollView(
         child: Column(
@@ -96,11 +98,16 @@ class _NavDrawerScreenState extends State<NavDrawer> {
       ListTile(
         leading: const Icon(Icons.home_outlined),
         title: const Text("Logout"),
-        onTap: (){},
+        onTap: onClickLogout,
       )
       
     ],
   )
   );
+
+  Future<void> onClickLogout() async {
+    await authenticator.logout();
+    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) =>  WelcomePage()));
+  }
     
 }
