@@ -8,25 +8,27 @@ class Survey {
   final DateTime createdAt;
   final int totalVoteCount;*/
 
-  String? _name;
-  String? _email;
-  String? _phoneNumber;
-  String? _address;
-  String? _propertyType;
-  User creator;
+  final String name;
+  final User creator;
+  final String email;
+  final String phoneNumber;
+  final String address;
+  String? propertyType;
+  
   final String id;
 
-  Survey(this.id, this.name, this.creator, this.createdAt, this.totalVoteCount);
+  Survey(this.id, this.name, this.creator, this.email, this.phoneNumber, this.address, this.propertyType);
 
-  Survey.fromDocSnapshot(DocumentSnapshot snapshot, User creator, int totalVoteCount)
+  Survey.fromDocSnapshot(DocumentSnapshot snapshot, User creator)
       : id = snapshot.id,
         name = snapshot['name'],
-        createdAt = snapshot['createdAt'].toDate(),
         creator = creator,
-        totalVoteCount = totalVoteCount;
+        email = snapshot['email'],
+        phoneNumber = snapshot['phoneNumber'],
+        address = snapshot['address'];
 
   @override
   String toString() {
-    return 'Survey{id: $id, name: $name, creator: $creator, createdAt: $createdAt}';
+    return 'Survey{id: $id, name: $name,  creator: $creator, email: $email, phoneNumber: $phoneNumber, address: $address}';
   }
 }

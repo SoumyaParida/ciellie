@@ -1,16 +1,28 @@
+import 'package:Ciellie/models/user.dart';
 import 'package:Ciellie/screens/gps.dart';
 import 'package:Ciellie/screens/screen.dart';
 import 'package:flutter/material.dart';
 
-class NavDrawer extends StatelessWidget {
+import 'package:Ciellie/network/prefs/shared_prefs.dart';
+
+class NavDrawer extends StatefulWidget {
+  final User user;
+  const NavDrawer({Key? key, required this.user}) : super(key: key);
+  //const NavDrawer({Key? key}) : super(key: key);
+  
+  @override
+  _NavDrawerScreenState createState() => _NavDrawerScreenState();
+}
+class _NavDrawerScreenState extends State<NavDrawer> {
   @override
   Widget build(BuildContext context) {
+    User userData = widget.user;
     return Drawer(
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            buildHeader(context),
+            buildHeader(context, userData),
             buildMenuItems(context),
           ],
         )
@@ -18,7 +30,7 @@ class NavDrawer extends StatelessWidget {
     );
   }
   
-  Widget buildHeader(BuildContext context) => Material(
+  Widget buildHeader(BuildContext context, User userData) => Material(
     color: Colors.blue.shade700,
     child: InkWell(
       onTap: () {
@@ -32,7 +44,7 @@ class NavDrawer extends StatelessWidget {
           top: 24 + MediaQuery.of(context).padding.top,
           bottom: 24,
         ),
-        child: Column(children: const[
+        child: Column(children: [
           CircleAvatar(
                 radius: 52,
                 child: Image(
@@ -41,14 +53,11 @@ class NavDrawer extends StatelessWidget {
                             ),
               ),
           SizedBox(height: 12),
-          Text(
-            'Soumya',
-            style: TextStyle(fontSize: 28, color: Colors.black),
+          ListTile(
+            title: Text(userData.username),
+            subtitle: Text(userData.email),
           ),
-          Text(
-            'soumya.parida3@gmail.com',
-            style: TextStyle(fontSize: 16, color: Colors.black),
-          )
+          
     ]),
   ),
   ),

@@ -110,7 +110,7 @@ class _SurveyListScreenState extends State<SurveyListScreen> {
         child: ListTile(
           title: Text(item.name),
           trailing: Text(
-            "${item.totalVoteCount} vote",
+            "vote",
             textAlign: TextAlign.end,
           ),
           subtitle: Text("@${item.creator.username}"),

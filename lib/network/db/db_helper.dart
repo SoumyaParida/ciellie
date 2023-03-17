@@ -1,9 +1,14 @@
+import 'package:Ciellie/network/auth/authenticator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:Ciellie/models/exceptions/auth_exception.dart';
 import 'package:Ciellie/models/result.dart';
 import 'package:Ciellie/models/survey.dart';
 import 'package:Ciellie/models/user.dart';
 import 'package:Ciellie/network/prefs/shared_prefs.dart';
+//import 'package:firebase_auth/firebase_auth.dart';
+//import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart' as fb_auth;
+import 'package:flutter/material.dart';
 
 class DbHelper {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
@@ -29,11 +34,7 @@ class DbHelper {
       final creatorDocSnapshot =
           await _db.collection("users").doc(creatorId).get();
       final creator = User.fromDocSnapshot(creatorDocSnapshot);
-      //get vote count
-      final choicesSnapshot = await e.reference.collection("choices").get();
-      final totalVoteCount = choicesSnapshot.docs
-          .fold(0, (int acc, e) => acc + List.from(e['voters']).length);
-      return Survey.fromDocSnapshot(e, creator, totalVoteCount);
+      return Survey.fromDocSnapshot(e, creator);
     }).toList();
     return Future.wait(surveys);
   }
@@ -77,46 +78,11 @@ class DbHelper {
         .set({'username': user.username, 'email': user.email});
   }
 
-  Future<Survey> createNewSurvey(String title, List<String> choices) async {
-    final creator = _sharedPrefs.getUser()!;
-    final ref = await _db.collection("surveys").add({
-      'name': title,
-      'creatorId': creator.id,
-      'createdAt': FieldValue.serverTimestamp(),
-    });
-    for (String choice in choices) {
-      await ref.collection("choices").add({
-        'name': choice,
-        'voters': [],
-      });
-    }
-    return Survey(ref.id, title, creator, DateTime.now(), 0);
+  Future<User> getUserData() async {
+    final ref = await _db
+        .collection("users").get();
+      final doc = ref.docs.single;
+    return User.fromDocSnapshot(doc);
   }
-
-  Stream<QuerySnapshot<Map<String, dynamic>>> choicesCollectionStream(
-      String id) {
-    return _db.collection("surveys").doc(id).collection("choices").snapshots();
-  }
-
-  Future<void> removeMeFromVoters(String surveyId, String choiceId) async {
-    _db
-        .collection("surveys")
-        .doc(surveyId)
-        .collection("choices")
-        .doc(choiceId)
-        .update({
-      'voters': FieldValue.arrayRemove([_sharedPrefs.getUser()!.id])
-    });
-  }
-
-  Future<void> addMeToVoters(String surveyId, String choiceId) async {
-    _db
-        .collection("surveys")
-        .doc(surveyId)
-        .collection("choices")
-        .doc(choiceId)
-        .update({
-      'voters': FieldValue.arrayUnion([_sharedPrefs.getUser()!.id])
-    });
-  }
+  
 }

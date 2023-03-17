@@ -165,9 +165,9 @@ class _NewSurveyScreenState extends State<NewSurveyScreen> {
     }
 
     final title = surveyNameController.text;
-    final newSurvey = await dbHelper.createNewSurvey(title, choices);
+    //final newSurvey = await dbHelper.createNewSurvey(title, choices);
 
-    Navigator.pop(context, newSurvey);
+    //Navigator.pop(context, newSurvey);
   }
 
   void onClickAdd() {

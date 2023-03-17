@@ -67,7 +67,7 @@ class _SurveyDetailScreenState extends State<SurveyDetailScreen> {
 
   Widget buildChoiceList() {
     return StreamBuilder<QuerySnapshot>(
-      stream: dbHelper.choicesCollectionStream(survey.id),
+      //stream: dbHelper.choicesCollectionStream(survey.id),
       builder: (context, snapshot) {
         if (snapshot.hasError) return Text("Error: ${snapshot.error}}");
         if (snapshot.connectionState == ConnectionState.waiting)
@@ -185,13 +185,13 @@ class _SurveyDetailScreenState extends State<SurveyDetailScreen> {
     final previousSelectedChoiceId = selectedChoiceId;
     if (selectedChoiceId == choice.id) {
       selectedChoiceId = null;
-      await dbHelper.removeMeFromVoters(survey.id, previousSelectedChoiceId!);
+      //await dbHelper.removeMeFromVoters(survey.id, previousSelectedChoiceId!);
       return;
     }
     //selectedChoiceId = choice.id;
-    if (previousSelectedChoiceId != null)
-      dbHelper.removeMeFromVoters(survey.id, previousSelectedChoiceId);
-    dbHelper.addMeToVoters(survey.id, choice.id);
+    //if (previousSelectedChoiceId != null)
+      //dbHelper.removeMeFromVoters(survey.id, previousSelectedChoiceId);
+    //dbHelper.addMeToVoters(survey.id, choice.id);
   }
 
   void onClickCreator() {

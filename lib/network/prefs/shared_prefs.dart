@@ -27,6 +27,14 @@ class SharedPrefs {
     return User.fromJson(loggedInUserJson);
   }
 
+  /*Future<User?> getUserData() async{
+    final loggerInUserJsonStr = _prefs!.getString("logged_in_user");
+    if (loggerInUserJsonStr == null) return null;
+    final loggedInUserJson = json.decode(loggerInUserJsonStr);
+    print(loggedInUserJson);
+    return User.fromJson(loggedInUserJson);
+  }*/
+
   Future<void> putUser(User user) async {
     final loggedInUserJson = json.encode(user.toJson());
     await _prefs!.setString("logged_in_user", loggedInUserJson);
