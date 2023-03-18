@@ -3,8 +3,15 @@ import 'package:Ciellie/screens/gps.dart';
 import 'package:Ciellie/screens/screen.dart';
 import 'package:flutter/material.dart';
 
+import 'package:Ciellie/screens/profile/profile_screen.dart';
+
 import 'package:Ciellie/network/prefs/shared_prefs.dart';
 import 'package:Ciellie/network/auth/authenticator.dart';
+
+
+import 'package:Ciellie/network/prefs/profile_share_prefs.dart';
+import 'package:Ciellie/models/profile.dart';
+import 'package:Ciellie/widgets/display_image_widget.dart';
 
 class NavDrawer extends StatefulWidget {
   final User? user;
@@ -18,13 +25,33 @@ class _NavDrawerScreenState extends State<NavDrawer> {
   final authenticator = Authenticator.instance;
   @override
   Widget build(BuildContext context) {
+    final profile = UserData.myUser;
     User userData = widget.user!;
+    String name = "";
+    String email = "";
+    String imagePath = "";
+    if (profile.name != ""){
+      name = profile.name;
+    }
+    else{
+      name = userData.username;
+    }
+
+    if (profile.email != ""){
+      email = profile.email;
+    }
+    else{
+      email = userData.email;
+    }
+
+    imagePath = profile.image;
+
     return Drawer(
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            buildHeader(context, userData),
+            buildHeader(context, name, email, imagePath),
             buildMenuItems(context),
           ],
         )
@@ -32,13 +59,13 @@ class _NavDrawerScreenState extends State<NavDrawer> {
     );
   }
   
-  Widget buildHeader(BuildContext context, User userData) => Material(
+  Widget buildHeader(BuildContext context, String name, String email, String imagePath) => Material(
     color: Colors.blue.shade700,
     child: InkWell(
       onTap: () {
         Navigator.pop(context);
         Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => MyUsersPage(),
+          builder: (context) => ProfilePage(uservalue: widget.user!),
         ));
       },
       child: Container(
@@ -49,15 +76,15 @@ class _NavDrawerScreenState extends State<NavDrawer> {
         child: Column(children: [
           CircleAvatar(
                 radius: 52,
-                child: Image(
-                              image:
-                                  AssetImage('assets/images/avatar.png'),
-                            ),
+                child: DisplayImage(
+                  imagePath: imagePath,
+                onPressed: () {},
+                ),
               ),
           SizedBox(height: 12),
           ListTile(
-            title: Text(userData.username),
-            subtitle: Text(userData.email),
+            title: Text(name),
+            subtitle: Text(email),
           ),
           
     ]),
