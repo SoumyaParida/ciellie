@@ -385,11 +385,24 @@ class _SurveyDetailsState extends State<SurveyDetails> {
                   
                        
                    ),
-              const SizedBox(height: 10),
+             SizedBox(
+                      height: 20,
+                    ),
 
 
-              Center(
-                child: ElevatedButton(
+              Container(
+                height: 60,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(18),
+                    ),
+                child: TextButton(
+                  style: ButtonStyle(
+                        overlayColor: MaterialStateProperty.resolveWith(
+                          (states) => Colors.black12,
+                        ),
+                      ),
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
                       // Save the form data before navigating to the next screen
