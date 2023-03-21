@@ -46,6 +46,8 @@ dependencies:
   string_validator: ^1.0.0
   email_validator: ^2.1.17
   time_slot: ^0.0.2
+  geocoding: ^2.1.0
+  geolocator: ^9.0.2
   
 
 dev_dependencies:

@@ -10,6 +10,9 @@ import 'package:time_slot/model/time_slot_Interval.dart';
 import 'package:time_slot/time_slot_from_interval.dart';
 import 'package:time_slot/time_slot_from_list.dart';
 
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
+
 class SurveyDetails extends StatefulWidget {
   const SurveyDetails({Key? key}) : super(key: key);
 
@@ -22,6 +25,65 @@ class _SurveyDetailsState extends State<SurveyDetails> {
   TextEditingController dateController = TextEditingController();
   TextEditingController timeinput = TextEditingController(); 
   TextEditingController textarea = TextEditingController();
+
+  String? _currentAddress;
+  Position? _currentPosition;
+
+  Future<bool> _handleLocationPermission() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text(
+              'Location services are disabled. Please enable the services')));
+      return false;
+    }
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Location permissions are denied')));
+        return false;
+      }
+    }
+    if (permission == LocationPermission.deniedForever) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text(
+              'Location permissions are permanently denied, we cannot request permissions.')));
+      return false;
+    }
+    return true;
+  }
+
+  Future<void> _getCurrentPosition() async {
+    final hasPermission = await _handleLocationPermission();
+
+    if (!hasPermission) return;
+    await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
+        .then((Position position) {
+      setState(() => _currentPosition = position);
+      _getAddressFromLatLng(_currentPosition!);
+    }).catchError((e) {
+      debugPrint(e);
+    });
+  }
+
+  Future<void> _getAddressFromLatLng(Position position) async {
+    await placemarkFromCoordinates(
+            _currentPosition!.latitude, _currentPosition!.longitude)
+        .then((List<Placemark> placemarks) {
+      Placemark place = placemarks[0];
+      setState(() {
+        _currentAddress =
+            '${place.street}, ${place.subLocality}, ${place.subAdministrativeArea}, ${place.postalCode}';
+      });
+    }).catchError((e) {
+      debugPrint(e);
+    });
+  }
 
   String? _name;
   String? _email;
@@ -404,18 +466,23 @@ class _SurveyDetailsState extends State<SurveyDetails> {
                         ),
                       ),
                   onPressed: () {
+                    _getCurrentPosition();
                     if (_formKey.currentState!.validate()) {
                       // Save the form data before navigating to the next screen
                       _formKey.currentState!.save();
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => SurveyDataCollect(final_address: _address!),
+                          builder: (context) => SurveyDataCollect(final_address: _currentAddress!),
                         ),
                       );
                     }
                   },
-                  child: const Text('Begin Survey!'),
+                  child: Text(
+                        "Begin Survey!",
+                        style: kButtonText.copyWith(color: Colors.blue),
+                      ),
+                  
                 ),
               ),
             ],
