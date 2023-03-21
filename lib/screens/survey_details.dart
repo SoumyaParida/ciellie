@@ -26,7 +26,7 @@ class _SurveyDetailsState extends State<SurveyDetails> {
   TextEditingController timeinput = TextEditingController(); 
   TextEditingController textarea = TextEditingController();
 
-  String? _currentAddress;
+  String _currentAddress = "";
   Position? _currentPosition;
 
   Future<bool> _handleLocationPermission() async {
@@ -473,14 +473,15 @@ class _SurveyDetailsState extends State<SurveyDetails> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => SurveyDataCollect(final_address: _currentAddress!),
+                          builder: (context) => SurveyDataCollect(final_address: _currentAddress),
                         ),
                       );
                     }
                   },
                   child: Text(
                         "Begin Survey!",
-                        style: kButtonText.copyWith(color: Colors.blue),
+                        style: kButtonText.copyWith(color: Colors.blue, fontSize: 20.0,fontWeight: FontWeight.bold),
+              
                       ),
                   
                 ),
