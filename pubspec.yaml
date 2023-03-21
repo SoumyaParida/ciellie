@@ -45,6 +45,7 @@ dependencies:
   firebase_core: ^2.7.1
   string_validator: ^1.0.0
   email_validator: ^2.1.17
+  time_slot: ^0.0.2
   
 
 dev_dependencies:

@@ -1,4 +1,4 @@
-//import 'package:Ciellie/screens/survey_details.dart';
+import 'package:Ciellie/screens/survey_details.dart';
 import 'package:flutter/material.dart';
 import '../widgets/widget.dart';
 import '../screens/screen.dart';
@@ -55,8 +55,7 @@ class _MyHomePageScreenState extends State<MyHomePage> {
       onPressed: () {
         Navigator.push(
             context,
-            //MaterialPageRoute(builder: (context) => SurveyDetails()));
-            MaterialPageRoute(builder: (context) => SurveyListScreen()));
+            MaterialPageRoute(builder: (context) => SurveyDetails()));
       },
       child: Icon(Icons.add),
       ),
