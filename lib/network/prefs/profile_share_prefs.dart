@@ -4,9 +4,12 @@ import 'package:Ciellie/models/profile.dart';
 
 //import 'user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:Ciellie/network/prefs/profile_share_prefs.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UserData {
   static late SharedPreferences _preferences;
+  final FirebaseFirestore _db = FirebaseFirestore.instance;
   static const _keyUser = 'user';
 
   static UserProfile myUser = UserProfile(
@@ -15,8 +18,7 @@ class UserData {
     name: '',
     email: '',
     phone: '',
-    aboutMeDescription:
-        '',
+    id: '',
   );
 
   static Future init() async =>

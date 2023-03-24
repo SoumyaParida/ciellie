@@ -44,12 +44,12 @@ You will be taking images and measurements of the truss/rafters.
               ),
             ),
             SizedBox(height: 40),
-            /*ElevatedButton(
+            ElevatedButton(
               onPressed: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => AtticDataCollect(),
+                    builder: (context) => AppDataCollect(),
                   ),
                 );
               },
@@ -67,7 +67,7 @@ You will be taking images and measurements of the truss/rafters.
                   borderRadius: BorderRadius.circular(30),
                 ),
               ),
-            ),*/
+            ),
           ],
         ),
       ),

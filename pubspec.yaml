@@ -48,6 +48,9 @@ dependencies:
   time_slot: ^0.0.2
   geocoding: ^2.1.0
   geolocator: ^9.0.2
+  image:
+  get: ^4.6.5
+  firebase_storage: 
   
 
 dev_dependencies:

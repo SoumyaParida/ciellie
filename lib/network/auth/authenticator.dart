@@ -1,3 +1,4 @@
+import 'package:Ciellie/models/profile.dart';
 import 'package:firebase_auth/firebase_auth.dart' hide User;
 import 'package:firebase_auth/firebase_auth.dart' as fb_auth show User;
 import 'package:Ciellie/models/exceptions/auth_exception.dart';
@@ -6,6 +7,7 @@ import 'package:Ciellie/models/result.dart';
 import 'package:Ciellie/network/db/db_helper.dart';
 import 'package:Ciellie/network/prefs/shared_prefs.dart';
 import 'package:Ciellie/validate/validator.dart';
+import 'package:Ciellie/models/profile.dart';
 
 class Authenticator {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -86,6 +88,8 @@ class Authenticator {
       final userToCreate = User(userCredential.user!.uid, username, email);
       await _dbHelper.createNewUser(userToCreate);
       _user = userToCreate;
+      final userProfileToCreate = UserProfile(id: userCredential.user!.uid, name: username, email: email,phone:"",image:"");
+      await _dbHelper.createProfile(userProfileToCreate);
       await _sharedPrefs.putUser(_user!);
       return Success(_user!);
     } on FirebaseAuthException catch (e) {

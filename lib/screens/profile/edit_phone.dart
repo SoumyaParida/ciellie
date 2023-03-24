@@ -6,10 +6,14 @@ import 'package:string_validator/string_validator.dart';
 
 import 'package:Ciellie/network/prefs/profile_share_prefs.dart';
 import 'package:Ciellie/widgets/appbar_widget.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:Ciellie/constants.dart';
 
 // This class handles the Page to edit the Phone Section of the User Profile.
 class EditPhoneFormPage extends StatefulWidget {
-  const EditPhoneFormPage({Key? key}) : super(key: key);
+  final String? email;
+  final String? phone;
+  const EditPhoneFormPage({Key? key, required this.email, required this.phone}) : super(key: key);
   @override
   EditPhoneFormPageState createState() {
     return EditPhoneFormPageState();
@@ -18,6 +22,7 @@ class EditPhoneFormPage extends StatefulWidget {
 
 class EditPhoneFormPageState extends State<EditPhoneFormPage> {
   final _formKey = GlobalKey<FormState>();
+  final FirebaseFirestore _db = FirebaseFirestore.instance;
   final phoneController = TextEditingController();
   var user = UserData.myUser;
 
@@ -51,8 +56,11 @@ class EditPhoneFormPageState extends State<EditPhoneFormPage> {
                     width: 320,
                     child: const Text(
                       "What's Your Phone Number?",
-                      style:
-                          TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.w700,
+                      color: Color.fromRGBO(64, 105, 225, 1),
+                    ),
                     )),
                 Padding(
                     padding: EdgeInsets.only(top: 40),
@@ -71,26 +79,35 @@ class EditPhoneFormPageState extends State<EditPhoneFormPage> {
                             }
                             return null;
                           },
+                          style: kBodyText.copyWith(
+                            color: Colors.white,
+                          ),
                           controller: phoneController,
                           decoration: const InputDecoration(
-                            labelText: 'Your Phone Number',
+                            contentPadding: EdgeInsets.all(20),
+                            hintText: "Phone Number",
+                            hintStyle: kBodyText,
                           ),
                         ))),
                 Padding(
                     padding: EdgeInsets.only(top: 150),
                     child: Align(
                         alignment: Alignment.bottomCenter,
+                        
                         child: SizedBox(
+                          
                           width: 320,
                           height: 50,
                           child: ElevatedButton(
                             onPressed: () {
+                              onClickButton(context, phoneController.text);
                               // Validate returns true if the form is valid, or false otherwise.
                               if (_formKey.currentState!.validate() &&
                                   isNumeric(phoneController.text)) {
                                 updateUserValue(phoneController.text);
                                 Navigator.pop(context);
                               }
+                              
                             },
                             child: const Text(
                               'Update',
@@ -100,5 +117,19 @@ class EditPhoneFormPageState extends State<EditPhoneFormPage> {
                         )))
               ]),
         ));
+  }
+  Future<void> onClickButton(BuildContext context, String phone) async {
+    String email = widget.email!;
+    print(email);
+    final snapshot =
+        await _db.collection("profiles").where("email", isEqualTo: email).get();
+    if (snapshot.docs.isNotEmpty){
+      var doc_id = snapshot.docs.first.id;
+      await _db.collection("profiles").doc(doc_id).update({"phone":phone});
+    }
+    else{
+      print("test");
+    }
+    return;
   }
 }

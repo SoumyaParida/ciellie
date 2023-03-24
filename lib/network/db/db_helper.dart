@@ -1,9 +1,9 @@
-import 'package:Ciellie/network/auth/authenticator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:Ciellie/models/exceptions/auth_exception.dart';
 import 'package:Ciellie/models/result.dart';
 import 'package:Ciellie/models/survey.dart';
 import 'package:Ciellie/models/user.dart';
+import 'package:Ciellie/models/profile.dart';
 import 'package:Ciellie/network/prefs/shared_prefs.dart';
 //import 'package:firebase_auth/firebase_auth.dart';
 //import 'package:firebase_auth/firebase_auth.dart';
@@ -83,6 +83,28 @@ class DbHelper {
         .collection("users").get();
       final doc = ref.docs.single;
     return User.fromDocSnapshot(doc);
+  }
+
+  /*Future<List<UserProfile>> get ProfileFuture async {
+    final profileSnapshot = await FirebaseFirestore.instance
+        .collection("profiles")
+        .get();
+    final profiles = profileSnapshot.docs.map((e) async {
+      //join user
+      final creatorId = e['creatorId'];
+      final creatorDocSnapshot =
+          await _db.collection("users").doc(creatorId).get();
+      final creator = User.fromDocSnapshot(creatorDocSnapshot);
+      return UserProfile.fromDocSnapshot(e, creator);
+    }).toList();
+    return Future.wait(profiles);
+  }*/
+
+  Future<void> createProfile(UserProfile userData) async {
+    await _db
+        .collection("profiles")
+        .doc(userData.id)
+        .set({'id': userData.id, 'name': userData.name, 'email': userData.email, 'phone': userData.phone, 'image': userData.image});
   }
   
 }

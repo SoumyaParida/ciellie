@@ -56,6 +56,7 @@ class _MyHomePageScreenState extends State<MyHomePage> {
         Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => SurveyDetails()));
+            //MaterialPageRoute(builder: (context) => SurveyListScreen()));
       },
       child: Icon(Icons.add),
       ),

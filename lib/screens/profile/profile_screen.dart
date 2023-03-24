@@ -1,15 +1,11 @@
 import 'dart:async';
 
+import 'package:Ciellie/models/profile.dart';
 import 'package:flutter/material.dart';
-import 'package:Ciellie/screens/profile/edit_description.dart';
-import 'package:Ciellie/screens/profile/edit_email.dart';
 import 'package:Ciellie/screens/profile/edit_image.dart';
-import 'package:Ciellie/screens/profile/edit_name.dart';
-import 'package:Ciellie/screens/profile/edit_name.dart';
 import 'package:Ciellie/screens/profile/edit_phone.dart';
 
 import 'package:Ciellie/models/user.dart';
-import 'package:Ciellie/models/profile.dart';
 
 import 'package:Ciellie/network/db/db_helper.dart';
 import 'package:Ciellie/network/prefs/shared_prefs.dart';
@@ -17,14 +13,12 @@ import 'package:Ciellie/network/prefs/shared_prefs.dart';
 import 'package:Ciellie/network/prefs/profile_share_prefs.dart';
 
 import 'package:Ciellie/widgets/display_image_widget.dart';
-//import '../user/user.dart';
-//import '../widgets/display_image_widget.dart';
-//import '../user/user_data.dart';
 
 // This class handles the Page to dispaly the user's info on the "Edit Profile" Screen
 class ProfilePage extends StatefulWidget {
+  final String newphone;
   final User? uservalue;
-  const ProfilePage({Key? key, required this.uservalue}) : super(key: key);
+  const ProfilePage({Key? key, required this.uservalue, required this.newphone}) : super(key: key);
   @override
   _ProfilePageState createState() => _ProfilePageState();
 }
@@ -34,6 +28,7 @@ class _ProfilePageState extends State<ProfilePage> {
   User? user;
   late SharedPrefs sharedPrefs;
   var isInitialDataFetched = false;
+  
 
   @override
   void initState() {
@@ -55,6 +50,8 @@ class _ProfilePageState extends State<ProfilePage> {
     final profile = UserData.myUser;
     //User userData = widget.user!;
     User userData = widget.uservalue!;
+    String phone = widget.newphone;
+    //UserProfile profile = widget.newprofile!;
 
     return Scaffold(
       body: Column(
@@ -77,26 +74,27 @@ class _ProfilePageState extends State<ProfilePage> {
                   ))),
           InkWell(
               onTap: () {
-                navigateSecondPage(EditImagePage());
+                navigateSecondPage(EditImagePage(email:userData.email, image: profile.image));
               },
               child: DisplayImage(
                 imagePath: profile.image,
                 onPressed: () {},
               )),
-          buildUserInfoDisplay(profile.name, 'Name', EditNameFormPage()),
-          buildUserInfoDisplay(profile.phone, 'Phone', EditPhoneFormPage()),
-          buildUserInfoDisplay(profile.email, 'Email', EditEmailFormPage()),
-          Expanded(
+          showConstantDetails(userData.username, 'Name'),
+          showConstantDetails(userData.email, 'Email'),
+          buildUserInfoDisplay(userData.email,phone, 'Phone'),
+          
+          /*Expanded(
             child: buildAbout(profile),
             flex: 4,
-          )
+          )*/
         ],
       ),
     );
   }
 
   // Widget builds the display item with the proper formatting to display the user's info
-  Widget buildUserInfoDisplay(String getValue, String title, Widget editPage) =>
+  Widget buildUserInfoDisplay(String email,String phone, String title) =>
       Padding(
           padding: EdgeInsets.only(bottom: 10),
           child: Column(
@@ -126,10 +124,10 @@ class _ProfilePageState extends State<ProfilePage> {
                     Expanded(
                         child: TextButton(
                             onPressed: () {
-                              navigateSecondPage(editPage);
+                              navigateSecondPage(EditPhoneFormPage(email:email, phone: phone));
                             },
                             child: Text(
-                              getValue,
+                              phone,
                               style: TextStyle(fontSize: 16, height: 1.4),
                             ))),
                     Icon(
@@ -141,55 +139,47 @@ class _ProfilePageState extends State<ProfilePage> {
             ],
           ));
 
-  // Widget builds the About Me Section
-  Widget buildAbout(UserProfile userprofile) => Padding(
-      padding: EdgeInsets.only(bottom: 10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Tell Us About Yourself',
-            style: TextStyle(
-              fontSize: 15,
-              fontWeight: FontWeight.w500,
-              color: Colors.grey,
-            ),
-          ),
-          const SizedBox(height: 1),
-          Container(
-              width: 350,
-              height: 200,
-              decoration: BoxDecoration(
-                  border: Border(
-                      bottom: BorderSide(
-                color: Colors.grey,
-                width: 1,
-              ))),
-              child: Row(children: [
-                Expanded(
-                    child: TextButton(
-                        onPressed: () {
-                          navigateSecondPage(EditDescriptionFormPage());
-                        },
-                        child: Padding(
-                            padding: EdgeInsets.fromLTRB(0, 10, 10, 10),
-                            child: Align(
-                                alignment: Alignment.topLeft,
-                                child: Text(
-                                  userprofile.aboutMeDescription,
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    height: 1.4,
-                                  ),
-                                ))))),
-                Icon(
-                  Icons.keyboard_arrow_right,
+  // Widget builds the display item with the proper formatting to display the user's info
+  Widget showConstantDetails(String getValue, String title) =>
+      Padding(
+          padding: EdgeInsets.only(bottom: 10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w500,
                   color: Colors.grey,
-                  size: 40.0,
-                )
-              ]))
-        ],
-      ));
+                ),
+              ),
+              SizedBox(
+                height: 1,
+              ),
+              Container(
+                  width: 350,
+                  height: 40,
+                  decoration: BoxDecoration(
+                      border: Border(
+                          bottom: BorderSide(
+                    color: Colors.grey,
+                    width: 1,
+                  ))),
+                  child: Row(children: [
+                    Expanded(
+                      
+                        child: Text(
+                              getValue,
+                              style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      color: Color.fromRGBO(64, 105, 225, 1),
+                    ),
+                            )),
+                  ]))
+            ],
+          ));
 
   // Refrshes the Page after updating user info.
   FutureOr onGoBack(dynamic value) {
