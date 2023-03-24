@@ -51,6 +51,11 @@ class _ProfilePageState extends State<ProfilePage> {
     //User userData = widget.user!;
     User userData = widget.uservalue!;
     String phone = widget.newphone;
+    
+    if (profile.phone == ""){
+        profile.phone = phone;
+    }
+
     //UserProfile profile = widget.newprofile!;
 
     return Scaffold(
@@ -82,7 +87,7 @@ class _ProfilePageState extends State<ProfilePage> {
               )),
           showConstantDetails(userData.username, 'Name'),
           showConstantDetails(userData.email, 'Email'),
-          buildUserInfoDisplay(userData.email,phone, 'Phone'),
+          buildUserInfoDisplay(userData.email,profile.phone, 'Phone'),
           
           /*Expanded(
             child: buildAbout(profile),
