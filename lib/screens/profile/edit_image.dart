@@ -23,17 +23,26 @@ class _EditImagePageState extends State<EditImagePage> {
   File? image;
 
   Future pickImage(ImageSource source) async{
-  try {
-    final image = await ImagePicker().pickImage(source: source); 
-    if(image == null) return;
+    try {
+      final image = await ImagePicker().pickImage(source: source); 
+      if(image == null) return;
 
-    final imageTemprary = File(image.path);
-    setState(() => this.image = imageTemprary);
-  }on PlatformException catch(e) {
-    print('Failed to pick image: $e');
+      //final imageTemprary = File(image.path);
+      final imagePermanent = await saveImagePermanently(image.path);
+      setState(() => this.image = imagePermanent);
+    }on PlatformException catch(e) {
+      print('Failed to pick image: $e');
+    }
   }
+
+  Future<File> saveImagePermanently(String imagePath) async{
+    final directory = await getApplicationDocumentsDirectory();
+    final name = basename(imagePath);
+    final image = File('${directory.path}/$name');
     
+    return File(imagePath).copy(image.path);
   }
+
 
   @override
   Widget build(BuildContext context) {
