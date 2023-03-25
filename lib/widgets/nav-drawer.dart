@@ -103,7 +103,7 @@ class _NavDrawerScreenState extends State<NavDrawer> {
         //print("targetprofile{$targetprofile}");
         Navigator.pop(context);
         Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => ProfilePage(newphone: newprofile!.phone, uservalue: widget.user!),
+          builder: (context) => ProfilePage(uservalue: widget.user!, newphone: newprofile!.phone, newimage: newprofile.image),
         ));
       },
       child: Container(
@@ -117,7 +117,17 @@ class _NavDrawerScreenState extends State<NavDrawer> {
                 radius: 52,
                 child: DisplayImage(
                   imagePath: imagePath,
-                onPressed: () {},
+                onPressed: () async {
+                  Future<UserProfile?> stringFuture = onClickButton(widget.user!.email);
+                  UserProfile? newprofile = await stringFuture;
+                  print("newpfofile{$newprofile}");
+                  
+                  //print("targetprofile{$targetprofile}");
+                  Navigator.pop(context);
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => ProfilePage(newphone: newprofile!.phone, newimage: newprofile.image, uservalue: widget.user!),
+                  ));
+                },
                 ),
               ),
           SizedBox(height: 12),

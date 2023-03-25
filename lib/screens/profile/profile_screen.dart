@@ -17,8 +17,9 @@ import 'package:Ciellie/widgets/display_image_widget.dart';
 // This class handles the Page to dispaly the user's info on the "Edit Profile" Screen
 class ProfilePage extends StatefulWidget {
   final String newphone;
+  final String newimage;
   final User? uservalue;
-  const ProfilePage({Key? key, required this.uservalue, required this.newphone}) : super(key: key);
+  const ProfilePage({Key? key, required this.uservalue, required this.newphone, required this.newimage}) : super(key: key);
   @override
   _ProfilePageState createState() => _ProfilePageState();
 }
@@ -51,9 +52,16 @@ class _ProfilePageState extends State<ProfilePage> {
     //User userData = widget.user!;
     User userData = widget.uservalue!;
     String phone = widget.newphone;
+    String image = widget.newimage;
     
     if (profile.phone == ""){
         profile.phone = phone;
+    }
+
+    if ((profile.image == "https://upload.wikimedia.org/wikipedia/en/0/0b/Darth_Vader_in_The_Empire_Strikes_Back.jpg")
+      && (image != ""))
+    {
+      profile.image = image;
     }
 
     //UserProfile profile = widget.newprofile!;
