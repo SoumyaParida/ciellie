@@ -19,7 +19,8 @@ import 'package:Ciellie/constants.dart';
 
 class NavDrawer extends StatefulWidget {
   final User? user;
-  const NavDrawer({Key? key, required this.user}) : super(key: key);
+  final UserProfile? userProfile;
+  const NavDrawer({Key? key, required this.user, required this.userProfile}) : super(key: key);
   //const NavDrawer({Key? key}) : super(key: key);
   
   @override
@@ -33,11 +34,10 @@ class _NavDrawerScreenState extends State<NavDrawer> {
   @override
   Widget build(BuildContext context) {
     //final profile = UserData.myUser;
-    User userData = widget.user!;
+    User user_data = widget.user!;
+    UserProfile userProfileData = widget.userProfile!;
     //Future<UserProfile?> _profile = onClickButton(userData.email); 
     //print("_profile {$_profile}");
-    
-    
     
     String name = "";
     String email = "";
@@ -45,36 +45,31 @@ class _NavDrawerScreenState extends State<NavDrawer> {
     String imagePath = "";
 
     final profile = UserData.myUser;
-
-    
-    /*onClickButton(userData.email).then((val) => setState(() {
-          profile = val;
-          //print("_profile{$_profile}");
-        }));
-  */
-    
-    //print("profile {$profile}");
-    
     print("profile{$profile}");
+    
     if (profile.name != ""){
       name = profile.name;
     }
     else{
-      name = userData.username;
+      name = user_data.username;
     }
 
     if (profile.email != ""){
       email = profile.email;
     }
     else{
-      email = userData.email;
+      email = user_data.email;
     }
 
-    if (profile.phone != ""){
-      phone = profile.phone;
-    }
+    phone =  userProfileData.phone;
 
-    imagePath = profile.image;
+    if (userProfileData.image.contains('https://')){
+      imagePath = userProfileData.image;
+    }
+    else{
+      imagePath = profile.image;
+    }
+    
 
     print("profile{$profile}");
 
