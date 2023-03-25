@@ -115,7 +115,7 @@ class _EditImagePageState extends State<EditImagePage> {
                   width: 330,
                   child: GestureDetector(
                     onTap: () async {
-                      /*final image = await ImagePicker()
+                      final image = await ImagePicker()
                           .pickImage(source: ImageSource.gallery);
 
                       if (image == null) return;
@@ -126,15 +126,11 @@ class _EditImagePageState extends State<EditImagePage> {
                       final newImage =
                           await File(image.path).copy(imageFile.path);
                       setState(
-                          () => user = user.copy(imagePath: newImage.path));*/
-                          pickImage(ImageSource.gallery);
+                          () => user = user.copy(imagePath: newImage.path));
+                          //pickImage(ImageSource.gallery);
                     },
                     
-                    child: image != null
-                      ? Image.file(
-                        image!,
-                      )
-                      : FlutterLogo(size: 160),
+                    child: Image.network("https://firebasestorage.googleapis.com/v0/b/ciellie.appspot.com/o/avatar%2Fprofile_zxYahOhy29csZ0ElbWf3272iphb2.jpg?alt=media&token=23099e9a-211c-4a92-b0a5-a0d6d40e4ca1"),
                   ))),
           Padding(
               padding: EdgeInsets.only(top: 40),
@@ -144,9 +140,7 @@ class _EditImagePageState extends State<EditImagePage> {
                     width: 330,
                     height: 50,
                     child: ElevatedButton(
-                      onPressed: () {
-                        pickImage(ImageSource.gallery);
-                      },
+                      onPressed: () {},
                       
                       child: const Text(
                         'Pick Gallery',

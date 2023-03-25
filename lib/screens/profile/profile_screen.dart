@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:Ciellie/models/profile.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +14,13 @@ import 'package:Ciellie/network/prefs/shared_prefs.dart';
 import 'package:Ciellie/network/prefs/profile_share_prefs.dart';
 
 import 'package:Ciellie/widgets/display_image_widget.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+//import 'package:path/path.dart';
+
 
 // This class handles the Page to dispaly the user's info on the "Edit Profile" Screen
 class ProfilePage extends StatefulWidget {
@@ -86,9 +94,22 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                   ))),
           InkWell(
-              onTap: () {
-                navigateSecondPage(EditImagePage(email:userData.email, image: profile.image));
-              },
+              onTap: () async {
+                                      final image = await ImagePicker()
+                          .pickImage(source: ImageSource.gallery);
+
+                      if (image == null) return;
+
+                      final location = await getApplicationDocumentsDirectory();
+                      final name = image.path.split('/').last;
+                      final imageFile = File('${location.path}/$name');
+                      final newImage =
+                          await File(image.path).copy(imageFile.path);
+                      setState(
+                          () => profile.image = newImage.path); //user = user.copy(imagePath: newImage.path));
+                          //pickImage(ImageSource.gallery);
+                    },
+              
               child: DisplayImage(
                 imagePath: profile.image,
                 onPressed: () {},
