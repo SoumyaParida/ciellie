@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:Ciellie/network/prefs/profile_share_prefs.dart';
 import 'package:flutter/services.dart';
@@ -8,10 +9,11 @@ import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
 import 'package:Ciellie/widgets/appbar_widget.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class EditImagePage extends StatefulWidget {
   final String image;
-  final String email;
+  final String? email;
   const EditImagePage({Key? key, required this.email, required this.image}) : super(key: key);
 
   @override
@@ -21,6 +23,8 @@ class EditImagePage extends StatefulWidget {
 class _EditImagePageState extends State<EditImagePage> {
   var user = UserData.myUser;
   File? image;
+  final FirebaseFirestore _db = FirebaseFirestore.instance;
+  String imageUrl = "";
 
   Future pickImage(ImageSource source) async{
     try {
@@ -30,9 +34,52 @@ class _EditImagePageState extends State<EditImagePage> {
       //final imageTemprary = File(image.path);
       final imagePermanent = await saveImagePermanently(image.path);
       setState(() => this.image = imagePermanent);
+      final imageInFirestore = await saveImageInfirestore(imagePermanent);
     }on PlatformException catch(e) {
       print('Failed to pick image: $e');
     }
+  }
+
+   Future<void> saveImageInfirestore(File imagePath) async {
+    String email = widget.email!;
+    print(email);
+    final snapshot =
+        await _db.collection("profiles").where("email", isEqualTo: email).get();
+    if (snapshot.docs.isNotEmpty){
+      var doc_id = snapshot.docs.first.id;
+      
+      // Create the file metadata
+      final metadata = SettableMetadata(contentType: "image/jpeg");
+      
+      // Create a reference to the Firebase Storage bucket
+      //final storageRef = FirebaseStorage.instance.ref();
+
+      //final uploadTask = storageRef
+      //    .child("profilePictures/profiles_{$doc_id}.jpg")
+      //     .putFile(imagePath, metadata);
+
+      Reference ref = FirebaseStorage.instance.ref()
+                  .child("avatar")
+                  .child('profile_${doc_id}.jpg');
+      //UploadTask uploadTask = ref.putFile(imagePath);
+      //final snapshottask = await uploadTask.whenComplete(() => null);
+      //final urlImageUser = await snapshot.ref.getDownloadURL();
+      await ref.putFile(imagePath, metadata);
+
+      //final urlImageUser = await snapshot.ref.getDownloadURL();
+      ref.getDownloadURL().then((value) {
+        print(value);
+        setState(() {
+          imageUrl =value;  
+        });
+      });
+      print("imageUrl{$imageUrl}");
+      await _db.collection("profiles").doc(doc_id).update({"image":imageUrl});      
+    }
+    else{
+      print("test");
+    }
+    return;
   }
 
   Future<File> saveImagePermanently(String imagePath) async{
