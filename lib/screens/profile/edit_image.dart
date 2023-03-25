@@ -22,9 +22,9 @@ class _EditImagePageState extends State<EditImagePage> {
   var user = UserData.myUser;
   File? image;
 
-  Future pickImage() async{
+  Future pickImage(ImageSource source) async{
   try {
-    final image = await ImagePicker().pickImage(source: ImageSource.gallery); 
+    final image = await ImagePicker().pickImage(source: source); 
     if(image == null) return;
 
     final imageTemprary = File(image.path);
@@ -48,9 +48,10 @@ class _EditImagePageState extends State<EditImagePage> {
               child: const Text(
                 "Upload a photo of yourself:",
                 style: TextStyle(
-                  fontSize: 23,
-                  fontWeight: FontWeight.bold,
-                ),
+                      fontSize: 27,
+                      fontWeight: FontWeight.w700,
+                      color: Color.fromRGBO(64, 105, 225, 1),
+                    ),
               )),
           Padding(
               padding: EdgeInsets.only(top: 20),
@@ -70,7 +71,7 @@ class _EditImagePageState extends State<EditImagePage> {
                           await File(image.path).copy(imageFile.path);
                       setState(
                           () => user = user.copy(imagePath: newImage.path));*/
-                          pickImage();
+                          pickImage(ImageSource.gallery);
                     },
                     
                     child: image != null
@@ -88,7 +89,7 @@ class _EditImagePageState extends State<EditImagePage> {
                     height: 50,
                     child: ElevatedButton(
                       onPressed: () {
-                        pickImage();
+                        pickImage(ImageSource.gallery);
                       },
                       
                       child: const Text(
@@ -106,7 +107,7 @@ class _EditImagePageState extends State<EditImagePage> {
                     width: 330,
                     height: 50,
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {ImageSource.camera;},
                       child: const Text(
                         'Pick Camera',
                         style: TextStyle(fontSize: 15),
