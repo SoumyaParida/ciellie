@@ -1,3 +1,5 @@
+import 'package:Ciellie/models/profile.dart';
+import 'package:Ciellie/models/survey.dart';
 import 'package:Ciellie/screens/survey_data_collect.dart';
 import 'package:flutter/material.dart';
 import '../constants.dart';
@@ -13,8 +15,11 @@ import 'package:time_slot/time_slot_from_list.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 
+import 'package:Ciellie/network/db/db_helper.dart';
+
 class SurveyDetails extends StatefulWidget {
-  const SurveyDetails({Key? key}) : super(key: key);
+  final UserProfile? userProfile;
+  const SurveyDetails({Key? key, required this.userProfile}) : super(key: key);
 
   @override
   _SurveyDetailsState createState() => _SurveyDetailsState();
@@ -25,6 +30,7 @@ class _SurveyDetailsState extends State<SurveyDetails> {
   TextEditingController dateController = TextEditingController();
   TextEditingController timeinput = TextEditingController(); 
   TextEditingController textarea = TextEditingController();
+  final _dbHelper = DbHelper.instance;
 
   String _currentAddress = "";
   Position? _currentPosition;
@@ -90,6 +96,9 @@ class _SurveyDetailsState extends State<SurveyDetails> {
   String? _phoneNumber;
   String? _address;
   String? _propertyType;
+  String? _date;
+  String? _time;
+  String? __message;
 
   @override
   void initState(){
@@ -107,11 +116,15 @@ class _SurveyDetailsState extends State<SurveyDetails> {
       print('Phone Number: $_phoneNumber');
       print('Address: $_address');
       print('Property Type: $_propertyType');
+      print('Date: $_date');
+      print('Time: $_time');
+      print('Message: $__message');
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    UserProfile profile = widget.userProfile!;
     return Scaffold(
       appBar: AppBar(
         title: const Text('Survey Details'),
@@ -333,6 +346,7 @@ class _SurveyDetailsState extends State<SurveyDetails> {
                     borderRadius: BorderRadius.circular(18),
                   ),
                   ),
+                  
               readOnly: true,  // when true user cannot edit text 
               onTap: () async {
                       //when click we have to show the datepicker
@@ -349,12 +363,14 @@ class _SurveyDetailsState extends State<SurveyDetails> {
                         //You can format date as per your need
 
                       setState(() {
-                         dateController.text = formattedDate.toString(); //set foratted date to TextField value. 
+                         dateController.text = formattedDate.toString(); 
+                        _date = formattedDate.toString();//set foratted date to TextField value. 
                     });
                   }
                   else{
                     print("date is not selected");
                   }},
+                 
                   
       ),
       SizedBox(
@@ -408,7 +424,8 @@ class _SurveyDetailsState extends State<SurveyDetails> {
                       //DateFormat() is from intl package, you can format the time on any pattern you need.
 
                       setState(() {
-                        timeinput.text = formattedTime.toString(); //set the value of text field. 
+                        timeinput.text = formattedTime.toString();
+                        _time =  formattedTime.toString();//set the value of text field. 
                       });
                   }else{
                       print("Time is not selected");
@@ -418,7 +435,7 @@ class _SurveyDetailsState extends State<SurveyDetails> {
                 height: 20,
       ),
 
-      TextField(
+      TextFormField(
         style: kBodyText.copyWith(
                     color: Colors.white,
                   ),
@@ -444,7 +461,15 @@ class _SurveyDetailsState extends State<SurveyDetails> {
                     borderRadius: BorderRadius.circular(18),
                   ),
                   ),
-                  
+                  validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter your Remarks';
+                  }
+                  return null;
+                },
+                onSaved: (value) {
+                  __message = value;
+                },
                        
                    ),
              SizedBox(
@@ -470,11 +495,13 @@ class _SurveyDetailsState extends State<SurveyDetails> {
                     if (_formKey.currentState!.validate()) {
                       // Save the form data before navigating to the next screen
                       _formKey.currentState!.save();
+                      createSurveyModel(profile.id, _name!, _email!, _phoneNumber!,_address!, _propertyType!, _date!, _time!, __message!);
                       Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => SurveyDataCollect(final_address: _currentAddress),
                         ),
+                        
                       );
                     }
                   },
@@ -491,6 +518,13 @@ class _SurveyDetailsState extends State<SurveyDetails> {
         ),
       ),
     );
+  }
+  
+  Future<void> createSurveyModel( String id, String name, String email, String phone, String address, String propertyType, 
+                        String date, String time, String message) async {
+    final userProfileToCreate = Survey(id: id, name: name, email: email, phone:phone ,address: address,
+                                      propertyType: propertyType,  date: date, time: time,message:message);
+      await _dbHelper.createSurvey(userProfileToCreate);
   }
 }
 

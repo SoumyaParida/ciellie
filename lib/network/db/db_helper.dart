@@ -23,7 +23,7 @@ class DbHelper {
     _sharedPrefs = await SharedPrefs.getInstance();
   }
 
-  Future<List<Survey>> get surveysFuture async {
+  /*Future<List<Survey>> get surveysFuture async {
     final surveysSnapshot = await FirebaseFirestore.instance
         .collection("surveys")
         .orderBy("createdAt", descending: true)
@@ -37,7 +37,7 @@ class DbHelper {
       return Survey.fromDocSnapshot(e, creator);
     }).toList();
     return Future.wait(surveys);
-  }
+  }*/
 
   Future<Result<User>> findUserByUsername(String username) async {
     final snapshot = await _db
@@ -107,4 +107,13 @@ class DbHelper {
         .set({'id': userData.id, 'name': userData.name, 'email': userData.email, 'phone': userData.phone, 'image': userData.image});
   }
   
+  Future<void> createSurvey(Survey userSurevey) async {
+    await _db
+        .collection("surveys")
+        .doc(userSurevey.id)
+        .set({'id': userSurevey.id, 'name': userSurevey.name, 'email': userSurevey.email, 
+        'phone': userSurevey.phone, 'address': userSurevey.address,
+        'propertyType': userSurevey.propertyType, 'date': userSurevey.date,
+        'time': userSurevey.time, 'message': userSurevey.message});
+  }
 }
