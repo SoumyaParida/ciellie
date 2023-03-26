@@ -17,17 +17,27 @@ class MyHomePage extends StatefulWidget
   _MyHomePageScreenState createState() => _MyHomePageScreenState();
 }
 
-class _MyHomePageScreenState extends State<MyHomePage> {
+class _MyHomePageScreenState extends State<MyHomePage> with TickerProviderStateMixin{
   final dbHelper = DbHelper.instance;
   User? user;
   UserProfile? userProfile;
   late SharedPrefs sharedPrefs;
   var isInitialDataFetched = false;
   final FirebaseFirestore _db = FirebaseFirestore.instance;
+  
+  static const List<Tab> myTabs = <Tab>[
+    Tab(child: Text("surveys", style: TextStyle(color: Colors.black)),),
+    Tab(child: Text("scheduled", style: TextStyle(color: Colors.black)),),
+    Tab(child: Text("incomplete", style: TextStyle(color: Colors.black)),),
+    Tab(child: Text("complted", style: TextStyle(color: Colors.black)),),
+  ];
+  
+  late TabController tabController;
 
   @override
   void initState() {
     super.initState();
+    tabController = TabController(length: 4, vsync: this);
     SharedPrefs.getInstance().then((prefs) async {
       sharedPrefs = prefs;
       user = sharedPrefs.getUser()!;
@@ -40,14 +50,17 @@ class _MyHomePageScreenState extends State<MyHomePage> {
     });
   }
 
+  @override
+ void dispose() {
+   tabController.dispose();
+   super.dispose();
+ }
+
   //late User user;
   //late SharedPrefs sharedPrefs;
   //var isInitialDataFetched = false;
   Widget build(BuildContext context) {
-    //SharedPrefs sharedPrefs = dbHelper.
-    //var userData = widget.user;
-    //print("user inside: $user");
-    //var uservalue = this.user ?? '';
+    //TabController tabController = TabController(length: 4, vsync: this);
 
     return Scaffold(  
       drawer: NavDrawer(user: this.user, userProfile : this.userProfile),
@@ -55,8 +68,118 @@ class _MyHomePageScreenState extends State<MyHomePage> {
         title: Text('Surveys'),
         backgroundColor: Colors.lightBlue,
       ),
-      body: Center(
+      /*body: Center(
         child: Text('Begin New Survey'),
+      ),*/
+      body: Column(
+        children: [
+          SizedBox(height: 20,),
+          Text(
+            "Survey Manager", 
+            style:TextStyle(
+                      fontSize: 32,
+                      fontWeight: FontWeight.w700,
+                      color: Color.fromRGBO(64, 105, 225, 1),
+                    ),
+          ),
+          SizedBox(height: 20,),
+          Card(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            elevation: 5,
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.black.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: TabBar(
+                indicator: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  color: Colors.orange
+                ),
+                controller: tabController,
+                isScrollable: true,
+                labelPadding: EdgeInsets.symmetric(horizontal: 30),
+                tabs: [
+                  Tab(child: Text("surveys", style: TextStyle(color: Colors.black)),),
+                  Tab(child: Text("scheduled", style: TextStyle(color: Colors.black)),),
+                  Tab(child: Text("incomplete", style: TextStyle(color: Colors.black)),),
+                  Tab(child: Text("complted", style: TextStyle(color: Colors.black)),),
+                ],
+              ),
+            ),
+
+          ),
+          Expanded(
+            child: TabBarView(
+              controller: tabController,
+              children: [
+                ListView.builder(
+                  physics: BouncingScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: 10,
+                  itemBuilder: (context,index){
+                    return Card(
+                      margin: EdgeInsets.symmetric(horizontal: 30, vertical:10),
+                      child: ListTile(
+                        leading: Icon(Icons.call_missed, color: Colors.red,),
+                        title: Text("Person ${index+1}"),
+                        subtitle: Text("Missed call from person ${index+1}"),
+                        trailing: Icon(Icons.phone_callback, color: Colors.green,),
+                      ), 
+                    );
+                  },
+                ),
+                ListView.builder(
+                  physics: BouncingScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: 10,
+                  itemBuilder: (context,index){
+                    return Card(
+                      margin: EdgeInsets.symmetric(horizontal: 30, vertical:10),
+                      child: ListTile(
+                        leading: Icon(Icons.call_missed, color: Colors.red,),
+                        title: Text("Person ${index+1}"),
+                        subtitle: Text("Missed call from person ${index+1}"),
+                        trailing: Icon(Icons.phone_callback, color: Colors.green,),
+                      ), 
+                    );
+                  },
+                ),
+                ListView.builder(
+                  physics: BouncingScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: 10,
+                  itemBuilder: (context,index){
+                    return Card(
+                      margin: EdgeInsets.symmetric(horizontal: 30, vertical:10),
+                      child: ListTile(
+                        leading: Icon(Icons.call_missed, color: Colors.red,),
+                        title: Text("Person ${index+1}"),
+                        subtitle: Text("Missed call from person ${index+1}"),
+                        trailing: Icon(Icons.phone_callback, color: Colors.green,),
+                      ), 
+                    );
+                  },
+                ),
+                ListView.builder(
+                  physics: BouncingScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: 10,
+                  itemBuilder: (context,index){
+                    return Card(
+                      margin: EdgeInsets.symmetric(horizontal: 30, vertical:10),
+                      child: ListTile(
+                        leading: Icon(Icons.call_missed, color: Colors.red,),
+                        title: Text("Person ${index+1}"),
+                        subtitle: Text("Missed call from person ${index+1}"),
+                        trailing: Icon(Icons.phone_callback, color: Colors.green,),
+                      ), 
+                    );
+                  },
+                ),
+              ]),
+          ),
+        ]
       ),
       floatingActionButton: FloatingActionButton(
       onPressed: () {
