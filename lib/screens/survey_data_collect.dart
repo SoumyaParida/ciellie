@@ -24,10 +24,13 @@ class _SurveyDataCollectState extends State<SurveyDataCollect> {
   void initState() {
     super.initState();
     _finalAddress = widget.final_address;
+    print("_finalAddress{$_finalAddress}");
   }
 
   @override
   Widget build(BuildContext context) {
+    final address = widget.final_address;
+    print("address{$address}");
     return Scaffold(
       appBar: AppBar(
         title: Text(_finalAddress),

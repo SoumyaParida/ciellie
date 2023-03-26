@@ -70,6 +70,7 @@ class _SurveyDetailsState extends State<SurveyDetails> {
     if (!hasPermission) return;
     await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
         .then((Position position) {
+          print("position{$position}");
       setState(() => _currentPosition = position);
       _getAddressFromLatLng(_currentPosition!);
     }).catchError((e) {
@@ -98,7 +99,7 @@ class _SurveyDetailsState extends State<SurveyDetails> {
   String? _propertyType;
   String? _date;
   String? _time;
-  String? __message;
+  String? _message;
 
   @override
   void initState(){
@@ -118,7 +119,7 @@ class _SurveyDetailsState extends State<SurveyDetails> {
       print('Property Type: $_propertyType');
       print('Date: $_date');
       print('Time: $_time');
-      print('Message: $__message');
+      print('Message: $_message');
     }
   }
 
@@ -468,7 +469,7 @@ class _SurveyDetailsState extends State<SurveyDetails> {
                   return null;
                 },
                 onSaved: (value) {
-                  __message = value;
+                  _message = value;
                 },
                        
                    ),
@@ -495,7 +496,7 @@ class _SurveyDetailsState extends State<SurveyDetails> {
                     if (_formKey.currentState!.validate()) {
                       // Save the form data before navigating to the next screen
                       _formKey.currentState!.save();
-                      createSurveyModel(profile.id, _name!, _email!, _phoneNumber!,_address!, _propertyType!, _date!, _time!, __message!);
+                      createSurveyModel(profile.id, _name!, _email!, _phoneNumber!,_address!, _propertyType!, _date!, _time!, _message!, 'incomplete');
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -521,9 +522,9 @@ class _SurveyDetailsState extends State<SurveyDetails> {
   }
   
   Future<void> createSurveyModel( String id, String name, String email, String phone, String address, String propertyType, 
-                        String date, String time, String message) async {
+                        String date, String time, String message, String status) async {
     final userProfileToCreate = Survey(id: id, name: name, email: email, phone:phone ,address: address,
-                                      propertyType: propertyType,  date: date, time: time,message:message);
+                                      propertyType: propertyType,  date: date, time: time,message:message, status: status);
       await _dbHelper.createSurvey(userProfileToCreate);
   }
 }

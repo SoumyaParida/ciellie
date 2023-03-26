@@ -12,6 +12,7 @@ class Survey {
   String time;
   String message;
   String id;
+  String status;
   
   Survey({
     required this.id,
@@ -23,6 +24,7 @@ class Survey {
     required this.date,
     required this.time,
     required this.message,
+    required this.status
   });
 
   Survey copy({
@@ -35,6 +37,7 @@ class Survey {
     String? time,
     String? message,
     String? id,
+    String? status,
   }) =>
       Survey(
         name: name ?? this.name,
@@ -46,9 +49,10 @@ class Survey {
         time: time ?? this.time,
         message: message ?? this.message,
         id: id ?? this.id,
+        status: status ?? this.status,
       );
 
-  Survey.fromFirebaseUser(fb_auth.User fbUser, String name, String phone, String address, String propertyType, String date, String time, String message)
+  Survey.fromFirebaseUser(fb_auth.User fbUser, String name, String phone, String address, String propertyType, String date, String time, String message, String status)
       : id = fbUser.uid,
         name = name,
         email = fbUser.email!,
@@ -57,7 +61,8 @@ class Survey {
         propertyType = propertyType,
         date = date,
         time = time,
-        message = message;
+        message = message,
+        status = status;
 
   factory Survey.fromDocSnapshot(DocumentSnapshot<Map<String, dynamic>> snapshot){
     final data = snapshot.data();
@@ -69,7 +74,8 @@ class Survey {
                   propertyType: data["propertyType"],
                   date: data["date"], 
                   time: data["time"], 
-                  message: data["message"]
+                  message: data["message"],
+                  status: data["status"],
                   );
   }
 
@@ -82,15 +88,16 @@ class Survey {
         propertyType = json['propertyType'],
         date = json['date'],
         time = json['time'],
-        message = json['message'];
+        message = json['message'],
+        status = json['status'];
 
   Map<String, dynamic> toJson() =>
       {'id': id, 'name': name, 'email': email, 'phone': phone, 'address':address, 
-      'propertyType':propertyType, 'date':date,'time':time, 'message':message};
+      'propertyType':propertyType, 'date':date,'time':time, 'message':message, 'status': status};
 
   @override
   String toString() {
-    return 'User{id: $id, username: $name, email: $email, phone: $phone, address: $address,propertyType: $propertyType, date: $date, time: $time, message: $message}';
+    return 'User{id: $id, username: $name, email: $email, phone: $phone, address: $address,propertyType: $propertyType, date: $date, time: $time, message: $message, status: $status}';
   }
 }
 

@@ -9,6 +9,7 @@ import 'package:Ciellie/network/prefs/shared_prefs.dart';
 //import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fb_auth;
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class DbHelper {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
@@ -111,9 +112,11 @@ class DbHelper {
     await _db
         .collection("surveys")
         .doc(userSurevey.id)
+        .collection("survey")
+        .doc()
         .set({'id': userSurevey.id, 'name': userSurevey.name, 'email': userSurevey.email, 
         'phone': userSurevey.phone, 'address': userSurevey.address,
         'propertyType': userSurevey.propertyType, 'date': userSurevey.date,
-        'time': userSurevey.time, 'message': userSurevey.message});
+        'time': userSurevey.time, 'message': userSurevey.message, 'status': userSurevey.status });
   }
 }
