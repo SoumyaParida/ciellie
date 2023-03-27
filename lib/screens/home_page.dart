@@ -29,8 +29,12 @@ class _MyHomePageScreenState extends State<MyHomePage> with TickerProviderStateM
   var isInitialDataFetched = false;
   final FirebaseFirestore _db = FirebaseFirestore.instance;
   List<String> docIDs =[];
+  List<String> scheduled_docIDs =[];
   Survey? targetSurvey;
   Survey? surveyItmes;
+
+  Survey? targetScheduledSurvey;
+  Survey? surveyScheduledItmes;
   
   static const List<Tab> myTabs = <Tab>[
     Tab(child: Text("surveys", style: TextStyle(color: Colors.black)),),
@@ -65,7 +69,7 @@ class _MyHomePageScreenState extends State<MyHomePage> with TickerProviderStateM
     });
   }
 
- //Widget getvalue(String id) {
+ //Get all Surveys
   Future<Survey?> getSurveyValues(String documentId, String profileId) async {
     final snapshot =
         await _db.collection("surveys").doc(profileId).collection("survey").doc(documentId).get();
@@ -78,6 +82,24 @@ class _MyHomePageScreenState extends State<MyHomePage> with TickerProviderStateM
     //  });
       print("targetSurvey{$targetSurvey}");
       return targetSurvey;
+  }
+
+  //Get all Scheduled
+  Future<Survey?> getScheduledSurveyValues(String documentId, String profileId) async {
+    final snapshot =
+        await _db.collection("surveys").doc(profileId).collection("survey").doc(documentId).get();
+    print("snapshot{$snapshot}");
+    var surveyValues = snapshot.data();
+    print("surveyValues{$surveyValues}");  
+    targetScheduledSurvey =  Survey.fromJson(surveyValues!);
+    print("targetScheduledSurvey{$targetScheduledSurvey}");
+    if (DateTime.parse(targetScheduledSurvey!.date).isAfter(DateTime.now())){
+      return targetScheduledSurvey;
+    }
+    else{
+      return null;
+    }
+    
   }
 
   @override
@@ -185,20 +207,45 @@ class _MyHomePageScreenState extends State<MyHomePage> with TickerProviderStateM
                       );
                   },
                 ),
-                ListView.builder(
-                  physics: BouncingScrollPhysics(),
-                  shrinkWrap: true,
-                  itemCount: 10,
-                  itemBuilder: (context,index){
-                    return Card(
-                      margin: EdgeInsets.symmetric(horizontal: 30, vertical:10),
-                      child: ListTile(
-                        leading: Icon(Icons.call_missed, color: Colors.red,),
-                        title: Text("Person ${index+1}"),
-                        subtitle: Text("Missed call from person ${index+1}"),
-                        trailing: Icon(Icons.phone_callback, color: Colors.green,),
-                      ), 
-                    );
+                FutureBuilder(
+                  future: getScheduledDocIds(profile.id, scheduled_docIDs),
+                  builder: (context,snapshot){
+                    return ListView.builder(
+                        physics: BouncingScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: scheduled_docIDs.toSet().toList().length,
+                        itemBuilder: (context,index){
+                          return Card(
+                            margin: EdgeInsets.symmetric(horizontal: 30, vertical:10),
+                            child: ListTile(
+                              leading: Icon(Icons.schedule_outlined, color: Colors.red,),
+                              title: GetSurveyName(documentId: scheduled_docIDs[index], profileId: profile.id, parameter: "address"),//Text(docIDs[index]),
+                              trailing: Text("Future Surveys"),
+                              onTap: () async {
+                                  surveyScheduledItmes = await getScheduledSurveyValues(scheduled_docIDs[index], profile.id);
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) =>
+                                          SurveyReopen(documentId: scheduled_docIDs[index], 
+                                                      profileId: profile,
+                                                      name: surveyScheduledItmes!.name,
+                                                      email: surveyScheduledItmes!.email,
+                                                      phone: surveyScheduledItmes!.phone,
+                                                      address: surveyScheduledItmes!.address,
+                                                      propertyType: surveyScheduledItmes!.propertyType,
+                                                      date: surveyScheduledItmes!.date,
+                                                      time: surveyScheduledItmes!.time,
+                                                      message: surveyScheduledItmes!.message,
+                                                      geolocation: surveyScheduledItmes!.geolocation,
+                                                      status: surveyScheduledItmes!.status,
+                                        )
+                                      )
+                                    );
+                                },
+                            ), 
+                          );
+                        },
+                      );
                   },
                 ),
                 ListView.builder(
@@ -253,6 +300,22 @@ class _MyHomePageScreenState extends State<MyHomePage> with TickerProviderStateM
       (snapshot) => snapshot.docs.forEach((element) { 
         print(element.reference);
         docIDs.add(element.reference.id);
+      }),
+    );
+  }
+
+  Future getScheduledDocIds(String profileId, List scheduled_docIDs) async{
+    await _db.collection("surveys").doc(profileId).collection("survey").get().then(
+      (snapshot) => snapshot.docs.forEach((element) async { 
+        print(element.reference);
+        final snapshot =
+                  await _db.collection("surveys").doc(profileId).collection("survey").doc(element.reference.id).get();
+        var surveyValues = snapshot.data();
+        targetScheduledSurvey =  Survey.fromJson(surveyValues!);
+        
+        if (DateTime.parse(targetScheduledSurvey!.date).isAfter(DateTime.now())){
+              scheduled_docIDs.add(element.reference.id);
+          }
       }),
     );
   }
