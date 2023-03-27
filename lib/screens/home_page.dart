@@ -155,13 +155,11 @@ class _MyHomePageScreenState extends State<MyHomePage> with TickerProviderStateM
                           return Card(
                             margin: EdgeInsets.symmetric(horizontal: 30, vertical:10),
                             child: ListTile(
-                              //leading: Icon(Icons.call_missed, color: Colors.red,),
+                              leading: Icon(Icons.document_scanner_rounded, color: Colors.red,),
                               title: GetSurveyName(documentId: docIDs[index], profileId: profile.id, parameter: "address"),//Text(docIDs[index]),
+                              trailing: Text("read-only"),
                               onTap: () async {
-                                  
-                                  //print("items{$items}");
                                   surveyItmes = await getSurveyValues(docIDs[index], profile.id);
-                                  
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(builder: (context) =>
@@ -180,14 +178,7 @@ class _MyHomePageScreenState extends State<MyHomePage> with TickerProviderStateM
                                         )
                                       )
                                     );
-                                      //MaterialPageRoute(builder: (context) => SurveyListScreen()));
                                 },
-                              
-                              /*onTap: (){
-                                SurveyReopen(documentId: docIDs[index], userProfile: this.userProfile);
-                              },*/
-                              //subtitle: Text("Missed call from person ${index+1}"),
-                              //trailing: Icon(Icons.phone_callback, color: Colors.green,),
                             ), 
                           );
                         },
