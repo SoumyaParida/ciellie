@@ -148,7 +148,7 @@ class _SurveyReopenState extends State<SurveyReopen> {
   @override
   void initState(){
     super.initState();
-    dateController.text = "";
+    dateController.text ="";
     timeinput.text = ""; //set the initial value of text field
   }
 
@@ -394,7 +394,8 @@ class _SurveyReopenState extends State<SurveyReopen> {
                       color: Colors.white60,
                     ),
               
-              controller: dateController, //editing controller of this TextField
+              controller: TextEditingController()..text = date,
+              onChanged: (dateController) => {}, //editing controller of this TextField
               //decoration: const InputDecoration( 
               //          icon: Icon(Icons.calendar_today), //icon of text field
               //        labelText: "Enter Date" //label text of field
@@ -455,7 +456,8 @@ class _SurveyReopenState extends State<SurveyReopen> {
                       color: Colors.white60,
                     ),
               
-              controller: timeinput, //editing controller of this TextField
+              controller: TextEditingController()..text = time,
+              onChanged: (timeinput) => {}, //editing controller of this TextField
               //decoration: const InputDecoration( 
               //          icon: Icon(Icons.calendar_today), //icon of text field
               //        labelText: "Enter Date" //label text of field
@@ -480,7 +482,8 @@ class _SurveyReopenState extends State<SurveyReopen> {
                     borderRadius: BorderRadius.circular(18),
                   ),
                   ),
-              readOnly: true,  // when true user cannot edit text 
+              //readOnly: true,  // when true user cannot edit text 
+              
               onTap: () async {
                       TimeOfDay? pickedTime =  await showTimePicker(
                           initialTime: TimeOfDay.now(),
@@ -562,7 +565,8 @@ class _SurveyReopenState extends State<SurveyReopen> {
                           (states) => Colors.black12,
                         ),
                       ),
-                  onPressed: () {
+                      onPressed: null,
+                  /*onPressed: () {
                     _getCurrentPosition();
                     if (_formKey.currentState!.validate()) {
                       // Save the form data before navigating to the next screen
@@ -577,7 +581,7 @@ class _SurveyReopenState extends State<SurveyReopen> {
                         
                       );
                     }
-                  },
+                  },*/
                   child: Text(
                         "Begin Survey!",
                         style: kButtonText.copyWith(color: Colors.blue, fontSize: 20.0,fontWeight: FontWeight.bold),

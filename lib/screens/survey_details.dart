@@ -497,7 +497,7 @@ class _SurveyDetailsState extends State<SurveyDetails> {
                       // Save the form data before navigating to the next screen
                       _formKey.currentState!.save();
                       //String id = DateTime.now().millisecondsSinceEpoch.toString() ;
-                      createSurveyModel(profile.id, _name!, _email!, _phoneNumber!,_address!, _propertyType!, _date!, _time!, _message!, 'complete');
+                      createSurveyModel(profile.id, _name!, _email!, _phoneNumber!,_address!, _propertyType!, _date!, _time!, _message!, 'incomplete');
                       Navigator.push(
                         context,
                         MaterialPageRoute(
