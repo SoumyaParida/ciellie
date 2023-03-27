@@ -1,4 +1,5 @@
 import 'package:Ciellie/models/profile.dart';
+import 'package:Ciellie/models/survey.dart';
 import 'package:Ciellie/screens/survey_details.dart';
 import 'package:flutter/material.dart';
 import '../widgets/widget.dart';
@@ -28,6 +29,8 @@ class _MyHomePageScreenState extends State<MyHomePage> with TickerProviderStateM
   var isInitialDataFetched = false;
   final FirebaseFirestore _db = FirebaseFirestore.instance;
   List<String> docIDs =[];
+  Survey? targetSurvey;
+  Survey? surveyItmes;
   
   static const List<Tab> myTabs = <Tab>[
     Tab(child: Text("surveys", style: TextStyle(color: Colors.black)),),
@@ -56,9 +59,25 @@ class _MyHomePageScreenState extends State<MyHomePage> with TickerProviderStateM
         
         isInitialDataFetched = true;
       });
+      //getSurveyValues()
       //setState(() => isInitialDataFetched = true);
       //super.initState();
     });
+  }
+
+ //Widget getvalue(String id) {
+  Future<Survey?> getSurveyValues(String documentId, String profileId) async {
+    final snapshot =
+        await _db.collection("surveys").doc(profileId).collection("survey").doc(documentId).get();
+    //final profile = snapshot.docs.map((e) => UserProfile.fromDocSnapshot(e)).single;
+    print("snapshot{$snapshot}");
+    var surveyValues = snapshot.data();
+    print("surveyValues{$surveyValues}");
+    //setState(() {       
+    targetSurvey =  Survey.fromJson(surveyValues!);
+    //  });
+      print("targetSurvey{$targetSurvey}");
+      return targetSurvey;
   }
 
   @override
@@ -137,12 +156,30 @@ class _MyHomePageScreenState extends State<MyHomePage> with TickerProviderStateM
                             margin: EdgeInsets.symmetric(horizontal: 30, vertical:10),
                             child: ListTile(
                               //leading: Icon(Icons.call_missed, color: Colors.red,),
-                              title: GetSurveyName(documentId: docIDs[index], profileId: profile.id),//Text(docIDs[index]),
-                              onTap: (){
-                                
+                              title: GetSurveyName(documentId: docIDs[index], profileId: profile.id, parameter: "address"),//Text(docIDs[index]),
+                              onTap: () async {
+                                  
+                                  //print("items{$items}");
+                                  surveyItmes = await getSurveyValues(docIDs[index], profile.id);
+                                  
                                   Navigator.push(
                                       context,
-                                      MaterialPageRoute(builder: (context) => SurveyReopen(documentId: docIDs[index], userProfile: this.userProfile)));
+                                      MaterialPageRoute(builder: (context) =>
+                                          SurveyReopen(documentId: docIDs[index], 
+                                                      profileId: profile,
+                                                      name: surveyItmes!.name,
+                                                      email: surveyItmes!.email,
+                                                      phone: surveyItmes!.phone,
+                                                      address: surveyItmes!.address,
+                                                      propertyType: surveyItmes!.propertyType,
+                                                      date: surveyItmes!.date,
+                                                      time: surveyItmes!.time,
+                                                      message: surveyItmes!.message,
+                                                      geolocation: surveyItmes!.geolocation,
+                                                      status: surveyItmes!.status,
+                                        )
+                                      )
+                                    );
                                       //MaterialPageRoute(builder: (context) => SurveyListScreen()));
                                 },
                               

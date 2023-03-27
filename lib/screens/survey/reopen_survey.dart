@@ -1,6 +1,9 @@
 import 'package:Ciellie/models/profile.dart';
 import 'package:Ciellie/models/survey.dart';
+import 'package:Ciellie/models/user.dart';
+import 'package:Ciellie/screens/survey/survey_name.dart';
 import 'package:Ciellie/screens/survey_data_collect.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:Ciellie/constants.dart';
 
@@ -17,10 +20,35 @@ import 'package:geolocator/geolocator.dart';
 
 import 'package:Ciellie/network/db/db_helper.dart';
 
+import 'package:Ciellie/network/prefs/shared_prefs.dart';
+
 class SurveyReopen extends StatefulWidget {
-  final UserProfile? userProfile;
-  final String documentId; 
-  const SurveyReopen({Key? key, required this.documentId ,required this.userProfile}) : super(key: key);
+  final User? profileId;
+  final String documentId;
+  final String name;
+  final String email;
+  final String phone;
+  final String address;
+  final String propertyType;
+  final String date;
+  final String time;
+  final String message;
+  final String geolocation;
+  final String status;
+
+  const SurveyReopen({Key? key, required this.documentId ,
+                                required this.profileId,
+                                required this.name,
+                                required this.email,
+                                required this.phone,
+                                required this.address,
+                                required this.propertyType,
+                                required this.date,
+                                required this.time,
+                                required this.message,
+                                required this.status,
+                                required this.geolocation,
+                      }) : super(key: key);
 
   @override
   _SurveyReopenState createState() => _SurveyReopenState();
@@ -32,6 +60,9 @@ class _SurveyReopenState extends State<SurveyReopen> {
   TextEditingController timeinput = TextEditingController(); 
   TextEditingController textarea = TextEditingController();
   final _dbHelper = DbHelper.instance;
+
+  late SharedPrefs sharedPrefs;
+  var isInitialDataFetched = false;
 
   String _currentAddress = "";
   Position? _currentPosition;
@@ -93,6 +124,15 @@ class _SurveyReopenState extends State<SurveyReopen> {
     });
   }
 
+  /*CollectionReference surveys = FirebaseFirestore.instance.collection("surveys").doc(profileId).collection("survey");
+
+  FutureBuilder<DocumentSnapshot>(
+      future: surveys.doc(documentId).get(),
+      builder: ((context, snapshot){
+        if (snapshot.connectionState == ConnectionState.done) {
+        Map<String, dynamic> data = 
+                    snapshot.data!.data() as Map<String, dynamic>;}
+  */
   String? _name;
   String? _email;
   String? _phoneNumber;
@@ -101,6 +141,9 @@ class _SurveyReopenState extends State<SurveyReopen> {
   String? _date;
   String? _time;
   String? _message;
+
+  User? user;
+  final FirebaseFirestore _db = FirebaseFirestore.instance;
 
   @override
   void initState(){
@@ -124,12 +167,33 @@ class _SurveyReopenState extends State<SurveyReopen> {
     }
   }
 
+  Future getSurveyName(String docId) async{
+    DocumentSnapshot<Map<String, dynamic>> survey = await _db.collection("surveys").doc(user!.id).collection("survey").
+                      doc(docId).get();
+    return Text("${survey['address']}");
+  }
+
   @override
   Widget build(BuildContext context) {
-    UserProfile profile = widget.userProfile!;
+    User profile = widget.profileId!;
+    String docId = widget.documentId;
+
+    String name = widget.name;
+    String email = widget.email;
+    String phone = widget.phone;
+    String address = widget.address;
+    String propertyType = widget.propertyType;
+    String date = widget.date;
+    String time = widget.time;
+    String message = widget.message;
+    String status = widget.status;
+    String geolocation = widget.geolocation;
+
+    
+    
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Survey Details'),
+        title: Text(address.toString()),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -138,6 +202,7 @@ class _SurveyReopenState extends State<SurveyReopen> {
           child: ListView(
             children: <Widget>[
               TextFormField(
+               initialValue: name.toString(),
                style: kBodyText.copyWith(
                     color: Colors.white,
                   ),
@@ -172,6 +237,7 @@ class _SurveyReopenState extends State<SurveyReopen> {
             ),
               const SizedBox(height: 10),
               TextFormField(
+              initialValue: email.toString(),
                style: kBodyText.copyWith(
                     color: Colors.white,
                   ),
@@ -211,6 +277,7 @@ class _SurveyReopenState extends State<SurveyReopen> {
 
               const SizedBox(height: 10),
               TextFormField(
+               initialValue: phone.toString(),
                style: kBodyText.copyWith(
                     color: Colors.white,
                   ),
@@ -247,6 +314,7 @@ class _SurveyReopenState extends State<SurveyReopen> {
 
               const SizedBox(height: 10),
               TextFormField(
+                initialValue: address.toString(),
                style: kBodyText.copyWith(
                     color: Colors.white,
                   ),
@@ -282,6 +350,7 @@ class _SurveyReopenState extends State<SurveyReopen> {
               const SizedBox(height: 10),
 
               TextFormField(
+                initialValue: propertyType.toString(),
                style: kBodyText.copyWith(
                     color: Colors.white,
                   ),
@@ -318,6 +387,7 @@ class _SurveyReopenState extends State<SurveyReopen> {
                       height: 20,
                     ),
             TextField(
+              
               style: TextStyle(
                       fontSize: 16.0,
                       //fontWeight: FontWeight.normal,

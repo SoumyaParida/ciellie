@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 class GetSurveyName extends StatelessWidget {
   final String documentId;
   final String profileId;
+  final String parameter;
 
-  GetSurveyName({required this.documentId, required this.profileId});
+  GetSurveyName({required this.documentId, required this.profileId, required this.parameter});
   
   @override
   Widget build(BuildContext context) {
@@ -19,7 +20,7 @@ class GetSurveyName extends StatelessWidget {
         if (snapshot.connectionState == ConnectionState.done) {
         Map<String, dynamic> data = 
                     snapshot.data!.data() as Map<String, dynamic>;
-        return Text("${data['address']}");
+        return Text("${data[parameter]}");
       }
       return Text("loading");
   }),
