@@ -30,11 +30,21 @@ class _MyHomePageScreenState extends State<MyHomePage> with TickerProviderStateM
   final FirebaseFirestore _db = FirebaseFirestore.instance;
   List<String> docIDs =[];
   List<String> scheduled_docIDs =[];
+  List<String> incomplete_docIDs =[];
+  List<String> completed_docIDs =[];
+  
+  
   Survey? targetSurvey;
   Survey? surveyItmes;
 
   Survey? targetScheduledSurvey;
   Survey? surveyScheduledItmes;
+
+  Survey? targetIncompleteSurvey;
+  Survey? surveyIncompleteItmes;
+
+  Survey? targetCompletedSurvey;
+  Survey? surveyCompletedItmes;
   
   static const List<Tab> myTabs = <Tab>[
     Tab(child: Text("surveys", style: TextStyle(color: Colors.black)),),
@@ -248,36 +258,86 @@ class _MyHomePageScreenState extends State<MyHomePage> with TickerProviderStateM
                       );
                   },
                 ),
-                ListView.builder(
-                  physics: BouncingScrollPhysics(),
-                  shrinkWrap: true,
-                  itemCount: 10,
-                  itemBuilder: (context,index){
-                    return Card(
-                      margin: EdgeInsets.symmetric(horizontal: 30, vertical:10),
-                      child: ListTile(
-                        leading: Icon(Icons.call_missed, color: Colors.red,),
-                        title: Text("Person ${index+1}"),
-                        subtitle: Text("Missed call from person ${index+1}"),
-                        trailing: Icon(Icons.phone_callback, color: Colors.green,),
-                      ), 
-                    );
+                FutureBuilder(
+                  future: getIncompleteDocIds(profile.id, incomplete_docIDs),
+                  builder: (context,snapshot){
+                    return ListView.builder(
+                        physics: BouncingScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: incomplete_docIDs.toSet().toList().length,
+                        itemBuilder: (context,index){
+                          return Card(
+                            margin: EdgeInsets.symmetric(horizontal: 30, vertical:10),
+                            child: ListTile(
+                              leading: Icon(Icons.incomplete_circle_outlined, color: Colors.red,),
+                              title: GetSurveyName(documentId: incomplete_docIDs[index], profileId: profile.id, parameter: "address"),//Text(docIDs[index]),
+                              trailing: Text("Incompleted"),
+                              onTap: () async {
+                                  surveyIncompleteItmes = await getSurveyValues(incomplete_docIDs[index], profile.id);
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) =>
+                                          SurveyReopen(documentId: incomplete_docIDs[index], 
+                                                      profileId: profile,
+                                                      name: surveyIncompleteItmes!.name,
+                                                      email: surveyIncompleteItmes!.email,
+                                                      phone: surveyIncompleteItmes!.phone,
+                                                      address: surveyIncompleteItmes!.address,
+                                                      propertyType: surveyIncompleteItmes!.propertyType,
+                                                      date: surveyIncompleteItmes!.date,
+                                                      time: surveyIncompleteItmes!.time,
+                                                      message: surveyIncompleteItmes!.message,
+                                                      geolocation: surveyIncompleteItmes!.geolocation,
+                                                      status: surveyIncompleteItmes!.status,
+                                        )
+                                      )
+                                    );
+                                },
+                            ), 
+                          );
+                        },
+                      );
                   },
                 ),
-                ListView.builder(
-                  physics: BouncingScrollPhysics(),
-                  shrinkWrap: true,
-                  itemCount: 10,
-                  itemBuilder: (context,index){
-                    return Card(
-                      margin: EdgeInsets.symmetric(horizontal: 30, vertical:10),
-                      child: ListTile(
-                        leading: Icon(Icons.call_missed, color: Colors.red,),
-                        title: Text("Person ${index+1}"),
-                        subtitle: Text("Missed call from person ${index+1}"),
-                        trailing: Icon(Icons.phone_callback, color: Colors.green,),
-                      ), 
-                    );
+                FutureBuilder(
+                  future: getCompletedDocIds(profile.id, completed_docIDs),
+                  builder: (context,snapshot){
+                    return ListView.builder(
+                        physics: BouncingScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: completed_docIDs.toSet().toList().length,
+                        itemBuilder: (context,index){
+                          return Card(
+                            margin: EdgeInsets.symmetric(horizontal: 30, vertical:10),
+                            child: ListTile(
+                              leading: Icon(Icons.subject_outlined, color: Colors.red,),
+                              title: GetSurveyName(documentId: completed_docIDs[index], profileId: profile.id, parameter: "address"),//Text(docIDs[index]),
+                              trailing: Text("Completed"),
+                              onTap: () async {
+                                  surveyCompletedItmes = await getSurveyValues(completed_docIDs[index], profile.id);
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) =>
+                                          SurveyReopen(documentId: completed_docIDs[index], 
+                                                      profileId: profile,
+                                                      name: surveyCompletedItmes!.name,
+                                                      email: surveyCompletedItmes!.email,
+                                                      phone: surveyCompletedItmes!.phone,
+                                                      address: surveyCompletedItmes!.address,
+                                                      propertyType: surveyCompletedItmes!.propertyType,
+                                                      date: surveyCompletedItmes!.date,
+                                                      time: surveyCompletedItmes!.time,
+                                                      message: surveyCompletedItmes!.message,
+                                                      geolocation: surveyCompletedItmes!.geolocation,
+                                                      status: surveyCompletedItmes!.status,
+                                        )
+                                      )
+                                    );
+                                },
+                            ), 
+                          );
+                        },
+                      );
                   },
                 ),
               ]),
@@ -315,6 +375,38 @@ class _MyHomePageScreenState extends State<MyHomePage> with TickerProviderStateM
         
         if (DateTime.parse(targetScheduledSurvey!.date).isAfter(DateTime.now())){
               scheduled_docIDs.add(element.reference.id);
+          }
+      }),
+    );
+  }
+
+  Future getIncompleteDocIds(String profileId, List incomplete_docIDs) async{
+    await _db.collection("surveys").doc(profileId).collection("survey").get().then(
+      (snapshot) => snapshot.docs.forEach((element) async { 
+        print(element.reference);
+        final snapshot =
+                  await _db.collection("surveys").doc(profileId).collection("survey").doc(element.reference.id).get();
+        var surveyValues = snapshot.data();
+        targetIncompleteSurvey =  Survey.fromJson(surveyValues!);
+        
+        if (targetIncompleteSurvey!.status != 'incomplete'){
+              incomplete_docIDs.add(element.reference.id);
+          }
+      }),
+    );
+  }
+
+  Future getCompletedDocIds(String profileId, List complete_docIDs) async{
+    await _db.collection("surveys").doc(profileId).collection("survey").get().then(
+      (snapshot) => snapshot.docs.forEach((element) async { 
+        print(element.reference);
+        final snapshot =
+                  await _db.collection("surveys").doc(profileId).collection("survey").doc(element.reference.id).get();
+        var surveyValues = snapshot.data();
+        targetCompletedSurvey =  Survey.fromJson(surveyValues!);
+        
+        if (targetCompletedSurvey!.status != 'complete'){
+              complete_docIDs.add(element.reference.id);
           }
       }),
     );
