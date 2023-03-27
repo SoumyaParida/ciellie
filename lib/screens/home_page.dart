@@ -9,6 +9,7 @@ import 'package:Ciellie/network/db/db_helper.dart';
 import 'package:Ciellie/network/prefs/shared_prefs.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:Ciellie/screens/survey/survey_name.dart';
+import 'package:Ciellie/screens/survey/reopen_survey.dart';
 
 class MyHomePage extends StatefulWidget
 {
@@ -48,9 +49,11 @@ class _MyHomePageScreenState extends State<MyHomePage> with TickerProviderStateM
       print("user: $user");
       final snapshot =
         await _db.collection("profiles").where("email", isEqualTo: user!.email).get();
+      userProfile = UserProfile.fromJson(snapshot.docs.first.data());
+      print("userProfile{$userProfile}");
       
       setState(() {
-        userProfile = UserProfile.fromJson(snapshot.docs.first.data());
+        
         isInitialDataFetched = true;
       });
       //setState(() => isInitialDataFetched = true);
@@ -135,6 +138,17 @@ class _MyHomePageScreenState extends State<MyHomePage> with TickerProviderStateM
                             child: ListTile(
                               //leading: Icon(Icons.call_missed, color: Colors.red,),
                               title: GetSurveyName(documentId: docIDs[index], profileId: profile.id),//Text(docIDs[index]),
+                              onTap: (){
+                                
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) => SurveyReopen(documentId: docIDs[index], userProfile: this.userProfile)));
+                                      //MaterialPageRoute(builder: (context) => SurveyListScreen()));
+                                },
+                              
+                              /*onTap: (){
+                                SurveyReopen(documentId: docIDs[index], userProfile: this.userProfile);
+                              },*/
                               //subtitle: Text("Missed call from person ${index+1}"),
                               //trailing: Icon(Icons.phone_callback, color: Colors.green,),
                             ), 
