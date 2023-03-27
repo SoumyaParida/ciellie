@@ -8,11 +8,13 @@ import 'package:Ciellie/models/user.dart';
 import 'package:Ciellie/network/db/db_helper.dart';
 import 'package:Ciellie/network/prefs/shared_prefs.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:Ciellie/screens/survey/survey_name.dart';
 
 class MyHomePage extends StatefulWidget
 {
-  const MyHomePage({Key? key}) : super(key: key);
-  
+  User? currentuser;
+  //const MyHomePage({Key? key, this.requ}) : super(key: key);
+  MyHomePage({required this.currentuser});
   @override
   _MyHomePageScreenState createState() => _MyHomePageScreenState();
 }
@@ -24,6 +26,7 @@ class _MyHomePageScreenState extends State<MyHomePage> with TickerProviderStateM
   late SharedPrefs sharedPrefs;
   var isInitialDataFetched = false;
   final FirebaseFirestore _db = FirebaseFirestore.instance;
+  List<String> docIDs =[];
   
   static const List<Tab> myTabs = <Tab>[
     Tab(child: Text("surveys", style: TextStyle(color: Colors.black)),),
@@ -37,6 +40,7 @@ class _MyHomePageScreenState extends State<MyHomePage> with TickerProviderStateM
   @override
   void initState() {
     super.initState();
+    
     tabController = TabController(length: 4, vsync: this);
     SharedPrefs.getInstance().then((prefs) async {
       sharedPrefs = prefs;
@@ -44,8 +48,12 @@ class _MyHomePageScreenState extends State<MyHomePage> with TickerProviderStateM
       print("user: $user");
       final snapshot =
         await _db.collection("profiles").where("email", isEqualTo: user!.email).get();
-      userProfile = UserProfile.fromJson(snapshot.docs.first.data());
-      setState(() => isInitialDataFetched = true);
+      
+      setState(() {
+        userProfile = UserProfile.fromJson(snapshot.docs.first.data());
+        isInitialDataFetched = true;
+      });
+      //setState(() => isInitialDataFetched = true);
       //super.initState();
     });
   }
@@ -61,7 +69,8 @@ class _MyHomePageScreenState extends State<MyHomePage> with TickerProviderStateM
   //var isInitialDataFetched = false;
   Widget build(BuildContext context) {
     //TabController tabController = TabController(length: 4, vsync: this);
-
+    User? profile = widget.currentuser;
+    
     return Scaffold(  
       drawer: NavDrawer(user: this.user, userProfile : this.userProfile),
       appBar: AppBar(
@@ -113,20 +122,25 @@ class _MyHomePageScreenState extends State<MyHomePage> with TickerProviderStateM
             child: TabBarView(
               controller: tabController,
               children: [
-                ListView.builder(
-                  physics: BouncingScrollPhysics(),
-                  shrinkWrap: true,
-                  itemCount: 10,
-                  itemBuilder: (context,index){
-                    return Card(
-                      margin: EdgeInsets.symmetric(horizontal: 30, vertical:10),
-                      child: ListTile(
-                        leading: Icon(Icons.call_missed, color: Colors.red,),
-                        title: Text("Person ${index+1}"),
-                        subtitle: Text("Missed call from person ${index+1}"),
-                        trailing: Icon(Icons.phone_callback, color: Colors.green,),
-                      ), 
-                    );
+                FutureBuilder(
+                  future: getDocIds(profile!.id, docIDs),
+                  builder: (context,snapshot){
+                    return ListView.builder(
+                        physics: BouncingScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: docIDs.toSet().toList().length,
+                        itemBuilder: (context,index){
+                          return Card(
+                            margin: EdgeInsets.symmetric(horizontal: 30, vertical:10),
+                            child: ListTile(
+                              //leading: Icon(Icons.call_missed, color: Colors.red,),
+                              title: GetSurveyName(documentId: docIDs[index], profileId: profile.id),//Text(docIDs[index]),
+                              //subtitle: Text("Missed call from person ${index+1}"),
+                              //trailing: Icon(Icons.phone_callback, color: Colors.green,),
+                            ), 
+                          );
+                        },
+                      );
                   },
                 ),
                 ListView.builder(
@@ -190,6 +204,14 @@ class _MyHomePageScreenState extends State<MyHomePage> with TickerProviderStateM
       },
       child: Icon(Icons.add),
       ),
+    );
+  }
+  Future getDocIds(String profileId, List docIDs) async{
+    await _db.collection("surveys").doc(profileId).collection("survey").get().then(
+      (snapshot) => snapshot.docs.forEach((element) { 
+        print(element.reference);
+        docIDs.add(element.reference.id);
+      }),
     );
   }
 }

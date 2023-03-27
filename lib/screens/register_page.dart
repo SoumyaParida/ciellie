@@ -282,6 +282,6 @@ class _RegisterPageState extends State<RegisterPage> {
 
   void onSignup(BuildContext context, User user) {
     print(user);
-    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) =>  MyHomePage()));
+    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) =>  MyHomePage(currentuser: user,)));
   }
 }

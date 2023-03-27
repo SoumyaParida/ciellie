@@ -182,7 +182,7 @@ class _SignInPageState extends State<SignInPage> {
 
   void onLogin(BuildContext context, User user) {
     print(user);
-    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) =>  MyHomePage()));
+    Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) =>  MyHomePage(currentuser: user)));
   }
 
 }

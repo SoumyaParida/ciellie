@@ -79,7 +79,7 @@ class _NavDrawerScreenState extends State<NavDrawer> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             buildHeader(context, name, email, phone, imagePath, profile),
-            buildMenuItems(context),
+            buildMenuItems(context, user_data),
           ],
         )
         ),
@@ -141,7 +141,7 @@ class _NavDrawerScreenState extends State<NavDrawer> {
   ),
   ),
   );
-  Widget buildMenuItems(BuildContext context) => Container(
+  Widget buildMenuItems(BuildContext context, User user_data) => Container(
     padding: const EdgeInsets.all(24),
     child: Wrap(
     runSpacing: 16,
@@ -150,7 +150,7 @@ class _NavDrawerScreenState extends State<NavDrawer> {
         leading: const Icon(Icons.home_outlined),
         title: const Text("Surveys"),
         onTap: () =>
-        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) =>  MyHomePage(),
+        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) =>  MyHomePage(currentuser: user_data),
         )),
       ),
       ListTile(
