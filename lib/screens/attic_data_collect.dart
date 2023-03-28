@@ -16,6 +16,9 @@ class _AppDataCollectState extends State<AppDataCollect> {
   Image? imageFromPreferences;
   bool _load = false;
 
+  final ImagePicker _picker = ImagePicker();
+  List<XFile> _imageList = [];
+
   pickImageFromGallery(ImageSource source) {
     setState(() {
       //imageFile = ImagePicker.pickImage(source: source) as Future<File>;
@@ -67,7 +70,7 @@ class _AppDataCollectState extends State<AppDataCollect> {
     return Scaffold(
       appBar: AppBar(
         title: Text("widget.title"),
-        actions: <Widget>[
+        /*actions: <Widget>[
           IconButton(
             icon: Icon(Icons.add),
             onPressed: () {
@@ -83,17 +86,68 @@ class _AppDataCollectState extends State<AppDataCollect> {
               loadImageFromPreferences();
             },
           ),
-        ],
+        ],*/
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            imageFromGallery(),
-            null == imageFromPreferences ? Container() : imageFromPreferences!,
-          ],
-        ),
-      ),
+      body: SafeArea(
+        child: 
+          Column(
+            children: [
+              OutlinedButton(
+                onPressed: (){
+                  selectImage();
+                },
+                child: const Text("Select Image")),
+                Expanded(
+                  child: GridView.builder(
+                                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
+                                    itemCount: _imageList.length,
+                                    itemBuilder: (BuildContext context, int index){
+                                      return Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Stack(
+                                          fit: StackFit.expand,
+                                          children: [
+                                            Image.file(
+                                              File(_imageList[index].path),
+                                              fit: BoxFit.cover,
+                                            ),
+
+                                            Positioned(
+                                              top: 4,
+                                              right: 4,
+                                              child: Container(
+                                                color: Color.fromRGBO(0, 0, 0, 0.7),
+                                                child: IconButton(
+                                                  onPressed: (){
+                                                    _imageList.removeAt(index);
+                                                    setState(() {
+                                                      
+                                                    });
+                                                  },
+                                                  icon: Icon(Icons.close),
+                                                  color: Colors.blue,
+                                                ),
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      );
+                                  }
+                  ),
+                ),
+            ],
+      )
+      )
     );
+  }
+
+  Future<void> selectImage() async {
+    final XFile? selected_image = 
+          await _picker.pickImage(source: ImageSource.gallery);
+    if(selected_image!.path.isNotEmpty){
+      _imageList.add(selected_image);
+    } 
+    //print(selected_image!.path.toString());
+    setState((){});
   }
 }

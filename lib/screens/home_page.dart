@@ -60,6 +60,7 @@ class _MyHomePageScreenState extends State<MyHomePage> with TickerProviderStateM
     super.initState();
     
     tabController = TabController(length: 4, vsync: this);
+    
     SharedPrefs.getInstance().then((prefs) async {
       sharedPrefs = prefs;
       user = sharedPrefs.getUser()!;
@@ -126,7 +127,7 @@ class _MyHomePageScreenState extends State<MyHomePage> with TickerProviderStateM
     User? profile = widget.currentuser;
     
     return Scaffold(  
-      drawer: NavDrawer(user: this.user, userProfile : this.userProfile),
+      drawer: NavDrawer(user: profile),
       appBar: AppBar(
         title: Text('Surveys'),
         backgroundColor: Colors.lightBlue,

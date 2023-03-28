@@ -117,6 +117,7 @@ class DbHelper {
         .set({'id': userSurevey.id, 'name': userSurevey.name, 'email': userSurevey.email, 
         'phone': userSurevey.phone, 'address': userSurevey.address,
         'propertyType': userSurevey.propertyType, 'date': userSurevey.date,
-        'time': userSurevey.time, 'message': userSurevey.message, 'status': userSurevey.status });
+        'time': userSurevey.time, 'message': userSurevey.message, 
+        'geolocation': userSurevey.geolocation,'status': userSurevey.status });
   }
 }

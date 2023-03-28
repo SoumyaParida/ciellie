@@ -19,8 +19,8 @@ import 'package:Ciellie/constants.dart';
 
 class NavDrawer extends StatefulWidget {
   final User? user;
-  final UserProfile? userProfile;
-  const NavDrawer({Key? key, required this.user, required this.userProfile}) : super(key: key);
+  //final UserProfile? userProfile;
+  const NavDrawer({Key? key, required this.user}) : super(key: key);
   //const NavDrawer({Key? key}) : super(key: key);
   
   @override
@@ -33,11 +33,10 @@ class _NavDrawerScreenState extends State<NavDrawer> {
   
   @override
   Widget build(BuildContext context) {
-    //final profile = UserData.myUser;
+    final profile = UserData.myUser;
     User user_data = widget.user!;
-    UserProfile userProfileData = widget.userProfile!;
-    //Future<UserProfile?> _profile = onClickButton(userData.email); 
-    //print("_profile {$_profile}");
+    String imagePath = "";
+    /*UserProfile userProfileData = widget.userProfile!;
     
     String name = "";
     String email = "";
@@ -71,34 +70,52 @@ class _NavDrawerScreenState extends State<NavDrawer> {
     }
     
 
-    print("profile{$profile}");
-
+    print("profile{$profile}");*/
+    
     return Drawer(
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            buildHeader(context, name, email, phone, imagePath, profile),
+            buildHeader(context, user_data),
             buildMenuItems(context, user_data),
           ],
         )
         ),
     );
   }
+
+  Future<UserProfile?> getProfile(String email) async{
+      final snapshot =
+        await _db.collection("profiles").where("email", isEqualTo: email).get();
+      targetprofile = UserProfile.fromJson(snapshot.docs.first.data());
+      print("userProfile future{$targetprofile}");
+      return targetprofile;
+  }
+
+  Future<String> getProfileImage(String email) async{
+      final snapshot =
+        await _db.collection("profiles").where("email", isEqualTo: email).get();
+      var image = snapshot.docs.first.get("image");
+      return image;
+  }
   
-  Widget buildHeader(BuildContext context, String name, String email, String phone, String imagePath, UserProfile profile) => Material(
+  Widget buildHeader(BuildContext context, User user)  => Material(
     color: Colors.blue.shade700,
     child: InkWell(
       onTap: () async {
         //UserProfile? profile = onClickButton(context, widget.user!.email) as UserProfile?;
-        Future<UserProfile?> stringFuture = onClickButton(widget.user!.email);
-        UserProfile? newprofile = await stringFuture;
-        print("newpfofile{$newprofile}");
+        UserProfile? userProfile = await getProfile(user.email);
+        //UserProfile? newprofile = await stringFuture;
+        print("newpfofile{$userProfile}");
         
         //print("targetprofile{$targetprofile}");
         Navigator.pop(context);
         Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => ProfilePage(uservalue: widget.user!, newphone: newprofile!.phone, newimage: newprofile.image),
+          builder: (context) => ProfilePage(uservalue: widget.user!, newphone: userProfile!.phone != " " ? userProfile.phone : " ",
+                                            newimage: userProfile.image != " " ? 
+                                                      userProfile.image : "https://upload.wikimedia.org/wikipedia/en/0/0b/Darth_Vader_in_The_Empire_Strikes_Back.jpg"
+                                          ),
         ));
       },
       child: Container(
@@ -108,36 +125,52 @@ class _NavDrawerScreenState extends State<NavDrawer> {
         ),
         child: Column(
           children: [
-          CircleAvatar(
+          CircleAvatar (
                 radius: 52,
-                child: DisplayImage(
-                  imagePath: imagePath,
-                onPressed: () async {
-                  Future<UserProfile?> stringFuture = onClickButton(widget.user!.email);
-                  UserProfile? newprofile = await stringFuture;
-                  print("newpfofile{$newprofile}");
+                child:
+                FutureBuilder(
+                  future: getProfileImage(user.email),
+                  builder: (context,snapshot){
+                    return DisplayImage (
+                  imagePath:  "https://upload.wikimedia.org/wikipedia/en/0/0b/Darth_Vader_in_The_Empire_Strikes_Back.jpg",
+                  onPressed: () async {
+                  UserProfile? userProfile = await getProfile(user.email);
+                  print("newpfofile{$userProfile}");
                   
                   //print("targetprofile{$targetprofile}");
                   Navigator.pop(context);
                   Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => ProfilePage(newphone: newprofile!.phone, newimage: newprofile.image, uservalue: widget.user!),
+                    builder: (context) => ProfilePage(uservalue: widget.user!, newphone: userProfile!.phone != " " ? userProfile.phone : " ", 
+                                                      newimage: userProfile.image != " " ? 
+                                                      userProfile.image : "https://upload.wikimedia.org/wikipedia/en/0/0b/Darth_Vader_in_The_Empire_Strikes_Back.jpg"
+                    ),
                   ));
                 },
-                ),
+                );
+                  }
               ),
+          ),
+          
+          
+          
+          
           SizedBox(height: 12),
           
           ListTile(
-            title: new Center(child: new Text(name,
+            title: new Center(child: new Text(user.username,
               style: new TextStyle(
                   fontWeight: FontWeight.w500, fontSize: 20.0),)),
             //title: Text(name),
-            subtitle: new Center(child: new Text(email,
+            subtitle: new Center(child: new Text(user.email,
               style: new TextStyle(
                   fontWeight: FontWeight.w500, fontSize: 15.0),)),
           ),
           
     ]),
+ 
+ 
+ 
+ 
   ),
   ),
   );

@@ -497,7 +497,7 @@ class _SurveyDetailsState extends State<SurveyDetails> {
                       // Save the form data before navigating to the next screen
                       _formKey.currentState!.save();
                       //String id = DateTime.now().millisecondsSinceEpoch.toString() ;
-                      createSurveyModel(profile.id, _name!, _email!, _phoneNumber!,_address!, _propertyType!, _date!, _time!, _message!, 'incomplete');
+                      createSurveyModel(profile.id, _name!, _email!, _phoneNumber!,_address!, _propertyType!, _date!, _time!, _message!,_currentAddress ,'incomplete');
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -523,7 +523,8 @@ class _SurveyDetailsState extends State<SurveyDetails> {
   }
   
   Future<void> createSurveyModel( String id, String name, String email, String phone, String address, String propertyType, 
-                        String date, String time, String message, String status) async {
+                        String date, String time, String message, String _currentAddress, String status) async {
+    
     final userProfileToCreate = Survey(id: id, name: name, email: email, phone:phone ,address: address,
                                       propertyType: propertyType,  date: date, time: time,message:message,geolocation: _currentAddress ,status: status);
       await _dbHelper.createSurvey(userProfileToCreate);
