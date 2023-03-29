@@ -67,8 +67,8 @@ class _MyHomePageScreenState extends State<MyHomePage> with TickerProviderStateM
       print("user: $user");
       final snapshot =
         await _db.collection("profiles").where("email", isEqualTo: user!.email).get();
-      userProfile = UserProfile.fromJson(snapshot.docs.first.data());
-      print("userProfile{$userProfile}");
+      //userProfile = UserProfile.fromJson(snapshot.docs.first.data());
+      //print("userProfile{$userProfile}");
       
       setState(() {
         

@@ -116,6 +116,28 @@ class _SignInPageState extends State<SignInPage> {
                 Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              CupertinoPageRoute(
+                                builder: (context) => ForgotPasswordPage(),
+                              ),
+                            );
+                          },
+                        child: Text(
+                          "Forgot Password ?",
+                          style: kBodyText.copyWith(
+                            color: Colors.white,
+                          ),
+                        ),
+                        ),
+                      ],
+                    ),
+            SizedBox(height: 20),
+                Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
                         Text(
                           "Dont't have an account? ",
                           style: kBodyText,

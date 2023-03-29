@@ -4,6 +4,7 @@ export './register_page.dart';
 export './home_page.dart';
 export './teams.dart';
 export './users_page.dart';
+export './forgotPassword.dart';
 //export '../screens/survey/add/new_survey_screen.dart';
 //export '../screens/survey/detail/survey_detail_screen.dart';
 //export '../screens/survey/list/survey_list_screen.dart';
