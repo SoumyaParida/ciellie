@@ -99,6 +99,22 @@ class _ProfilePageState extends State<ProfilePage> {
     
   }
 
+  Future<String> getProfileImage(String email) async{
+      try{
+        final snapshot =
+          await _db.collection("profiles").where("email", isEqualTo: email).get();
+        var image = snapshot.docs.first.get("image");
+        if(image == ""){
+          image = "https://upload.wikimedia.org/wikipedia/en/0/0b/Darth_Vader_in_The_Empire_Strikes_Back.jpg";
+        }
+        setState(() {});
+        return image;
+      } catch (e) {
+        print(e);
+        return "https://upload.wikimedia.org/wikipedia/en/0/0b/Darth_Vader_in_The_Empire_Strikes_Back.jpg";
+      }
+  }
+
     //UserProfile profile = widget.newprofile!;
 
     return Scaffold(
@@ -136,14 +152,38 @@ class _ProfilePageState extends State<ProfilePage> {
                       setState(
                           () => profile.image = newImage.path); //user = user.copy(imagePath: newImage.path));
                       
-                     await saveImageInfirestore(imageFile);
+                    await saveImageInfirestore(imageFile);
                                          },
               
-              child: DisplayImage(
-                imagePath: image != "" ? 
-                           image : "https://upload.wikimedia.org/wikipedia/en/0/0b/Darth_Vader_in_The_Empire_Strikes_Back.jpg",
+              /*child: DisplayImage(
+                imagePath: profile.image != "" ? profile.image : "https://upload.wikimedia.org/wikipedia/en/0/0b/Darth_Vader_in_The_Empire_Strikes_Back.jpg",
                 onPressed: () {},
-              )),
+              );*/
+              child: FutureBuilder<String>(
+            future: getProfileImage(userData.email),
+            builder: (context, snapshot) {
+            if(!snapshot.hasData) return Container();
+
+            if(snapshot.data!.isNotEmpty){
+              String data = snapshot.data as String;
+              return CircleAvatar(
+                    radius: 52,
+                    child: DisplayImage(
+                      imagePath: data,
+                      onPressed: (){
+                        //setState(() {});
+                      },
+                      
+                    ),
+                  );
+            }
+            else {
+                          print("List Null");
+                          return Text("");
+            }
+            }
+          ),
+   ),
           showConstantDetails(userData.username, 'Name'),
           showConstantDetails(userData.email, 'Email'),
           buildUserInfoDisplay(userData.email,profile.phone, 'Phone'),

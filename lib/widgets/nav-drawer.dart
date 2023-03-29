@@ -103,6 +103,9 @@ class _NavDrawerScreenState extends State<NavDrawer> {
         final snapshot =
           await _db.collection("profiles").where("email", isEqualTo: email).get();
         var image = snapshot.docs.first.get("image");
+        if(image == ""){
+          image = "https://upload.wikimedia.org/wikipedia/en/0/0b/Darth_Vader_in_The_Empire_Strikes_Back.jpg";
+        }
         return image;
       } catch (e) {
         print(e);
@@ -152,8 +155,12 @@ class _NavDrawerScreenState extends State<NavDrawer> {
                       
                       //print("targetprofile{$targetprofile}");
                       Navigator.pop(context);
-                      navigateSecondPage(ProfilePage(newphone: newprofile!.phone, newimage: newprofile.image, uservalue: widget.user!),
-                      );
+                      //Navigator.of(context).pushReplacement(ProfilePage(newphone: newprofile!.phone, newimage: newprofile.image, uservalue: widget.user!)),
+                      //);
+
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => ProfilePage(newphone: newprofile!.phone, newimage: newprofile.image, uservalue: widget.user!),
+                        ));
                     },
                     ),
                   );
@@ -247,7 +254,7 @@ class _NavDrawerScreenState extends State<NavDrawer> {
 
   }
 
-  FutureOr onGoBack(dynamic value) {
+  /*FutureOr onGoBack(dynamic value) {
     setState(() {});
   }
 
@@ -255,6 +262,6 @@ class _NavDrawerScreenState extends State<NavDrawer> {
   void navigateSecondPage(Widget editForm) {
     Route route = MaterialPageRoute(builder: (context) => editForm);
     Navigator.push(context, route).then(onGoBack);
-  }
+  }*/
 
 }
