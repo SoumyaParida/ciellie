@@ -127,7 +127,10 @@ class _MyHomePageScreenState extends State<MyHomePage> with TickerProviderStateM
     User? profile = widget.currentuser;
     
     return Scaffold(  
-      drawer: NavDrawer(user: profile),
+      drawer: NavDrawer(
+        user: profile,
+        
+      ),
       appBar: AppBar(
         title: Text('Surveys'),
         backgroundColor: Colors.lightBlue,

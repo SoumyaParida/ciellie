@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:Ciellie/models/user.dart';
 import 'package:Ciellie/screens/gps.dart';
 import 'package:Ciellie/screens/screen.dart';
@@ -30,6 +32,8 @@ class _NavDrawerScreenState extends State<NavDrawer> {
   final authenticator = Authenticator.instance;
   final FirebaseFirestore _db = FirebaseFirestore.instance;
   UserProfile? targetprofile;
+
+  CollectionReference users = FirebaseFirestore.instance.collection('users');
   
   @override
   Widget build(BuildContext context) {
@@ -99,23 +103,21 @@ class _NavDrawerScreenState extends State<NavDrawer> {
       var image = snapshot.docs.first.get("image");
       return image;
   }
-  
-  Widget buildHeader(BuildContext context, User user)  => Material(
+
+  //Widget buildHeader(BuildContext context, User user_data) => Material(
+  Widget buildHeader(BuildContext context, User user) => Material(
     color: Colors.blue.shade700,
     child: InkWell(
       onTap: () async {
         //UserProfile? profile = onClickButton(context, widget.user!.email) as UserProfile?;
-        UserProfile? userProfile = await getProfile(user.email);
-        //UserProfile? newprofile = await stringFuture;
-        print("newpfofile{$userProfile}");
+        Future<UserProfile?> stringFuture = onClickButton(widget.user!.email);
+        UserProfile? newprofile = await stringFuture;
+        print("newpfofile{$newprofile}");
         
         //print("targetprofile{$targetprofile}");
         Navigator.pop(context);
         Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => ProfilePage(uservalue: widget.user!, newphone: userProfile!.phone != " " ? userProfile.phone : " ",
-                                            newimage: userProfile.image != " " ? 
-                                                      userProfile.image : "https://upload.wikimedia.org/wikipedia/en/0/0b/Darth_Vader_in_The_Empire_Strikes_Back.jpg"
-                                          ),
+          builder: (context) => ProfilePage(uservalue: widget.user!, newphone: newprofile!.phone, newimage: newprofile.image),
         ));
       },
       child: Container(
@@ -125,35 +127,37 @@ class _NavDrawerScreenState extends State<NavDrawer> {
         ),
         child: Column(
           children: [
-          CircleAvatar (
-                radius: 52,
-                child:
-                FutureBuilder(
-                  future: getProfileImage(user.email),
-                  builder: (context,snapshot){
-                    return DisplayImage (
-                  imagePath:  "https://upload.wikimedia.org/wikipedia/en/0/0b/Darth_Vader_in_The_Empire_Strikes_Back.jpg",
-                  onPressed: () async {
-                  UserProfile? userProfile = await getProfile(user.email);
-                  print("newpfofile{$userProfile}");
-                  
-                  //print("targetprofile{$targetprofile}");
-                  Navigator.pop(context);
-                  Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => ProfilePage(uservalue: widget.user!, newphone: userProfile!.phone != " " ? userProfile.phone : " ", 
-                                                      newimage: userProfile.image != " " ? 
-                                                      userProfile.image : "https://upload.wikimedia.org/wikipedia/en/0/0b/Darth_Vader_in_The_Empire_Strikes_Back.jpg"
+            
+          FutureBuilder<String>(
+            future: getProfileImage(user.email),
+            builder: (context, snapshot) {
+            if(!snapshot.hasData) return Container();
+
+            if(snapshot.data!.isNotEmpty){
+              String data = snapshot.data as String;
+              return CircleAvatar(
+                    radius: 52,
+                    child: DisplayImage(
+                      imagePath: data,
+                      onPressed: () async {
+                      Future<UserProfile?> stringFuture = onClickButton(widget.user!.email);
+                      UserProfile? newprofile = await stringFuture;
+                      print("newpfofile{$newprofile}");
+                      
+                      //print("targetprofile{$targetprofile}");
+                      Navigator.pop(context);
+                      navigateSecondPage(ProfilePage(newphone: newprofile!.phone, newimage: newprofile.image, uservalue: widget.user!),
+                      );
+                    },
                     ),
-                  ));
-                },
-                );
-                  }
-              ),
+                  );
+            }
+            else {
+                          print("List Null");
+                          return Text("");
+            }
+            }
           ),
-          
-          
-          
-          
           SizedBox(height: 12),
           
           ListTile(
@@ -167,14 +171,10 @@ class _NavDrawerScreenState extends State<NavDrawer> {
           ),
           
     ]),
- 
- 
- 
- 
   ),
   ),
   );
-  Widget buildMenuItems(BuildContext context, User user_data) => Container(
+  Widget buildMenuItems(BuildContext context, User user) => Container(
     padding: const EdgeInsets.all(24),
     child: Wrap(
     runSpacing: 16,
@@ -183,7 +183,7 @@ class _NavDrawerScreenState extends State<NavDrawer> {
         leading: const Icon(Icons.home_outlined),
         title: const Text("Surveys"),
         onTap: () =>
-        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) =>  MyHomePage(currentuser: user_data),
+        Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) =>  MyHomePage(currentuser: user),
         )),
       ),
       ListTile(
@@ -234,4 +234,15 @@ class _NavDrawerScreenState extends State<NavDrawer> {
     print("targetprofile1{$targetprofile}");
     return targetprofile;
   }
+
+  FutureOr onGoBack(dynamic value) {
+    setState(() {});
+  }
+
+  // Handles navigation and prompts refresh.
+  void navigateSecondPage(Widget editForm) {
+    Route route = MaterialPageRoute(builder: (context) => editForm);
+    Navigator.push(context, route).then(onGoBack);
+  }
+
 }

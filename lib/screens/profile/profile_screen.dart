@@ -18,6 +18,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 //import 'package:path/path.dart';
 
@@ -37,6 +38,7 @@ class _ProfilePageState extends State<ProfilePage> {
   User? user;
   late SharedPrefs sharedPrefs;
   var isInitialDataFetched = false;
+  final FirebaseFirestore _db = FirebaseFirestore.instance;
   
 
   @override
@@ -72,9 +74,35 @@ class _ProfilePageState extends State<ProfilePage> {
       profile.image = image;
     }
 
+    Future<void> saveImageInfirestore(File imagePath) async {
+    String email = userData.email;
+    print(email);
+    final snapshot =
+        await _db.collection("profiles").where("email", isEqualTo: email).get();
+    if (snapshot.docs.isNotEmpty){
+      var doc_id = snapshot.docs.first.id;
+      // Create the file metadata
+      final metadata = SettableMetadata(contentType: "image/jpeg");
+      Reference ref = FirebaseStorage.instance.ref()
+                  .child("avatar")
+                  .child('profile_${doc_id}.jpg');
+      UploadTask uploadTask = ref.putFile(imagePath);
+      final snapshottask = await uploadTask.whenComplete(() => null);
+      final imageUrl = await snapshottask.ref.getDownloadURL();
+      print("imageUrl{$imageUrl}");
+      final result=_db.collection("profiles").doc(doc_id).update({"image":imageUrl});
+      profile.image = imageUrl;
+      print("result{$result}");
+      return;
+    }
+    return;
+    
+  }
+
     //UserProfile profile = widget.newprofile!;
 
     return Scaffold(
+      
       body: Column(
         children: [
           AppBar(
@@ -95,7 +123,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   ))),
           InkWell(
               onTap: () async {
-                                      final image = await ImagePicker()
+                      final image = await ImagePicker()
                           .pickImage(source: ImageSource.gallery);
 
                       if (image == null) return;
@@ -107,11 +135,13 @@ class _ProfilePageState extends State<ProfilePage> {
                           await File(image.path).copy(imageFile.path);
                       setState(
                           () => profile.image = newImage.path); //user = user.copy(imagePath: newImage.path));
-                          //pickImage(ImageSource.gallery);
-                    },
+                      
+                     await saveImageInfirestore(imageFile);
+                                         },
               
               child: DisplayImage(
-                imagePath: profile.image,
+                imagePath: image != "" ? 
+                           image : "https://upload.wikimedia.org/wikipedia/en/0/0b/Darth_Vader_in_The_Empire_Strikes_Back.jpg",
                 onPressed: () {},
               )),
           showConstantDetails(userData.username, 'Name'),
