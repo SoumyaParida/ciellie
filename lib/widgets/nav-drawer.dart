@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:Ciellie/models/user.dart';
 import 'package:Ciellie/screens/gps.dart';
 import 'package:Ciellie/screens/screen.dart';
+//import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'package:Ciellie/screens/profile/profile_screen.dart';
@@ -98,10 +99,15 @@ class _NavDrawerScreenState extends State<NavDrawer> {
   }
 
   Future<String> getProfileImage(String email) async{
-      final snapshot =
-        await _db.collection("profiles").where("email", isEqualTo: email).get();
-      var image = snapshot.docs.first.get("image");
-      return image;
+      try{
+        final snapshot =
+          await _db.collection("profiles").where("email", isEqualTo: email).get();
+        var image = snapshot.docs.first.get("image");
+        return image;
+      } catch (e) {
+        print(e);
+        return "https://upload.wikimedia.org/wikipedia/en/0/0b/Darth_Vader_in_The_Empire_Strikes_Back.jpg";
+      }
   }
 
   //Widget buildHeader(BuildContext context, User user_data) => Material(
@@ -222,17 +228,23 @@ class _NavDrawerScreenState extends State<NavDrawer> {
 
   Future<UserProfile?> onClickButton(String email) async {
     print("email{$email}");
-    final snapshot =
-        await _db.collection("profiles").where("email", isEqualTo: email).get();
-    final profile = snapshot.docs.map((e) => UserProfile.fromDocSnapshot(e)).single;
-    print("snapshot{$snapshot}");
-    var phone = snapshot.docs.first.get("phone");
-    var userprofile = snapshot.docs.first.data();
-    targetprofile =  UserProfile.fromJson(userprofile);
-    print("phone{$phone}");
-    print("userprofile{$userprofile}");
-    print("targetprofile1{$targetprofile}");
-    return targetprofile;
+    try{
+      final snapshot =
+          await _db.collection("profiles").where("email", isEqualTo: email).get();
+      final profile = snapshot.docs.map((e) => UserProfile.fromDocSnapshot(e)).single;
+      print("snapshot{$snapshot}");
+      var phone = snapshot.docs.first.get("phone");
+      var userprofile = snapshot.docs.first.data();
+      targetprofile =  UserProfile.fromJson(userprofile);
+      print("phone{$phone}");
+      print("userprofile{$userprofile}");
+      print("targetprofile1{$targetprofile}");
+      return targetprofile;
+    } catch (e) {
+      print(e);
+      return targetprofile;
+    }
+
   }
 
   FutureOr onGoBack(dynamic value) {
