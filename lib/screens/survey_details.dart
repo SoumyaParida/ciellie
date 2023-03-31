@@ -501,7 +501,7 @@ class _SurveyDetailsState extends State<SurveyDetails> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => SurveyDataCollect(final_address: _currentAddress),
+                          builder: (context) => SurveyDataCollect(final_address: _currentAddress, profileId: profile),
                         ),
                         
                       );

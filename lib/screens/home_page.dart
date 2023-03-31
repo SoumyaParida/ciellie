@@ -11,6 +11,7 @@ import 'package:Ciellie/network/prefs/shared_prefs.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:Ciellie/screens/survey/survey_name.dart';
 import 'package:Ciellie/screens/survey/reopen_survey.dart';
+import 'package:Ciellie/screens/survey/reopen_scheduled_survey.dart';
 
 class MyHomePage extends StatefulWidget
 {
@@ -113,6 +114,36 @@ class _MyHomePageScreenState extends State<MyHomePage> with TickerProviderStateM
     
   }
 
+  Future<Survey?> getIncompletedSurveyValues(String documentId, String profileId) async {
+    final snapshot =
+        await _db.collection("surveys").doc(profileId).collection("survey").doc(documentId).get();
+    print("snapshot{$snapshot}");
+    var surveyValues = snapshot.data();
+    print("surveyValues{$surveyValues}");  
+    targetIncompleteSurvey =  Survey.fromJson(surveyValues!);
+    print("targetIncompleteSurvey{$targetIncompleteSurvey}");
+    if (DateTime.parse(targetScheduledSurvey!.date).isAfter(DateTime.now())){
+      return targetScheduledSurvey;
+    }
+    else{
+      return null;
+    } 
+  }
+
+  Future<UserProfile?> getProfile(String userId) async {
+    try{
+      final snapshot = await _db.collection("profiles").doc(userId).get();
+
+      var ProfileValues = snapshot.data();
+      userProfile = UserProfile.fromJson(ProfileValues!);
+      return userProfile;
+    } catch (e) {
+      print(e);
+      return null;
+    }
+  
+  }
+
   @override
  void dispose() {
    tabController.dispose();
@@ -196,6 +227,7 @@ class _MyHomePageScreenState extends State<MyHomePage> with TickerProviderStateM
                               trailing: Text("read-only"),
                               onTap: () async {
                                   surveyItmes = await getSurveyValues(docIDs[index], profile.id);
+                                  UserProfile? userprofile = await getProfile(profile.id);
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(builder: (context) =>
@@ -211,6 +243,7 @@ class _MyHomePageScreenState extends State<MyHomePage> with TickerProviderStateM
                                                       message: surveyItmes!.message,
                                                       geolocation: surveyItmes!.geolocation,
                                                       status: surveyItmes!.status,
+                                                      userprofile: userprofile,
                                         )
                                       )
                                     );
@@ -236,11 +269,12 @@ class _MyHomePageScreenState extends State<MyHomePage> with TickerProviderStateM
                               title: GetSurveyName(documentId: scheduled_docIDs[index], profileId: profile.id, parameter: "address"),//Text(docIDs[index]),
                               trailing: Text("Future Surveys"),
                               onTap: () async {
-                                  surveyScheduledItmes = await getScheduledSurveyValues(scheduled_docIDs[index], profile.id);
+                                  surveyScheduledItmes = await getSurveyValues(scheduled_docIDs[index], profile.id);
+                                  UserProfile? userprofile = await getProfile(profile.id);
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(builder: (context) =>
-                                          SurveyReopen(documentId: scheduled_docIDs[index], 
+                                          SchduledSurveyReopen(documentId: scheduled_docIDs[index], 
                                                       profileId: profile,
                                                       name: surveyScheduledItmes!.name,
                                                       email: surveyScheduledItmes!.email,
@@ -252,6 +286,7 @@ class _MyHomePageScreenState extends State<MyHomePage> with TickerProviderStateM
                                                       message: surveyScheduledItmes!.message,
                                                       geolocation: surveyScheduledItmes!.geolocation,
                                                       status: surveyScheduledItmes!.status,
+                                                      userprofile: userprofile,
                                         )
                                       )
                                     );
@@ -278,10 +313,11 @@ class _MyHomePageScreenState extends State<MyHomePage> with TickerProviderStateM
                               trailing: Text("Incompleted"),
                               onTap: () async {
                                   surveyIncompleteItmes = await getSurveyValues(incomplete_docIDs[index], profile.id);
+                                  UserProfile? userprofile = await getProfile(profile.id);
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(builder: (context) =>
-                                          SurveyReopen(documentId: incomplete_docIDs[index], 
+                                          SchduledSurveyReopen(documentId: incomplete_docIDs[index], 
                                                       profileId: profile,
                                                       name: surveyIncompleteItmes!.name,
                                                       email: surveyIncompleteItmes!.email,
@@ -293,6 +329,7 @@ class _MyHomePageScreenState extends State<MyHomePage> with TickerProviderStateM
                                                       message: surveyIncompleteItmes!.message,
                                                       geolocation: surveyIncompleteItmes!.geolocation,
                                                       status: surveyIncompleteItmes!.status,
+                                                      userprofile: userprofile,
                                         )
                                       )
                                     );
@@ -319,6 +356,7 @@ class _MyHomePageScreenState extends State<MyHomePage> with TickerProviderStateM
                               trailing: Text("Completed"),
                               onTap: () async {
                                   surveyCompletedItmes = await getSurveyValues(completed_docIDs[index], profile.id);
+                                  UserProfile? userprofile = await getProfile(profile.id);
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(builder: (context) =>
@@ -334,6 +372,7 @@ class _MyHomePageScreenState extends State<MyHomePage> with TickerProviderStateM
                                                       message: surveyCompletedItmes!.message,
                                                       geolocation: surveyCompletedItmes!.geolocation,
                                                       status: surveyCompletedItmes!.status,
+                                                      userprofile: userprofile,
                                         )
                                       )
                                     );
@@ -349,10 +388,11 @@ class _MyHomePageScreenState extends State<MyHomePage> with TickerProviderStateM
         ]
       ),
       floatingActionButton: FloatingActionButton(
-      onPressed: () {
+      onPressed: () async {
+        UserProfile? userprofile = await getProfile(profile.id);
         Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => SurveyDetails(userProfile : this.userProfile)));
+            MaterialPageRoute(builder: (context) => SurveyDetails(userProfile : userprofile)));
             //MaterialPageRoute(builder: (context) => SurveyListScreen()));
       },
       child: Icon(Icons.add),
@@ -393,7 +433,7 @@ class _MyHomePageScreenState extends State<MyHomePage> with TickerProviderStateM
         var surveyValues = snapshot.data();
         targetIncompleteSurvey =  Survey.fromJson(surveyValues!);
         
-        if (targetIncompleteSurvey!.status != 'incomplete'){
+        if (DateTime.parse(targetIncompleteSurvey!.date).isBefore(DateTime.now()) && (targetIncompleteSurvey!.status == 'incomplete')){
               incomplete_docIDs.add(element.reference.id);
           }
       }),
@@ -409,7 +449,7 @@ class _MyHomePageScreenState extends State<MyHomePage> with TickerProviderStateM
         var surveyValues = snapshot.data();
         targetCompletedSurvey =  Survey.fromJson(surveyValues!);
         
-        if (targetCompletedSurvey!.status != 'complete'){
+        if (targetCompletedSurvey!.status == 'complete'){
               complete_docIDs.add(element.reference.id);
           }
       }),

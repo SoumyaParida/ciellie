@@ -1,11 +1,22 @@
 import 'package:Ciellie/screens/attic_data_collect.dart';
 import 'package:flutter/material.dart';
 
-class TrussInfoPage extends StatelessWidget {
-  const TrussInfoPage({Key? key}) : super(key: key);
+import '../models/profile.dart';
 
+class TrussInfoPage extends StatefulWidget {
+  final UserProfile profile;
+  final String address;
+
+  TrussInfoPage({required this.profile, required this.address});
+  @override
+  _TrussInfoPageState createState() => _TrussInfoPageState();
+}
+
+class _TrussInfoPageState extends State<TrussInfoPage>{
   @override
   Widget build(BuildContext context) {
+    UserProfile userprofile = widget.profile;
+    String address = widget.address;
     return Scaffold(
       appBar: AppBar(
         title: Text('Truss Info'),
@@ -49,7 +60,7 @@ You will be taking images and measurements of the truss/rafters.
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => AppDataCollect(),
+                    builder: (context) => AppDataCollect(userprofile: userprofile, address: address, title: "Attic"),
                   ),
                 );
               },

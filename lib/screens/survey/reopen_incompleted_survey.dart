@@ -22,7 +22,7 @@ import 'package:Ciellie/network/db/db_helper.dart';
 
 import 'package:Ciellie/network/prefs/shared_prefs.dart';
 
-class SurveyReopen extends StatefulWidget {
+class SchduledSurveyReopen extends StatefulWidget {
   final User? profileId;
   final String documentId;
   final String name;
@@ -35,9 +35,9 @@ class SurveyReopen extends StatefulWidget {
   final String message;
   final String geolocation;
   final String status;
-  final UserProfile? userprofile;
+  final UserProfile userprofile;
 
-  const SurveyReopen({Key? key, required this.documentId ,
+  const SchduledSurveyReopen({Key? key, required this.documentId ,
                                 required this.profileId,
                                 required this.name,
                                 required this.email,
@@ -53,10 +53,10 @@ class SurveyReopen extends StatefulWidget {
                       }) : super(key: key);
 
   @override
-  _SurveyReopenState createState() => _SurveyReopenState();
+  _SchduledSurveyReopenState createState() => _SchduledSurveyReopenState();
 }
 
-class _SurveyReopenState extends State<SurveyReopen> {
+class _SchduledSurveyReopenState extends State<SchduledSurveyReopen> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController dateController = TextEditingController();
   TextEditingController timeinput = TextEditingController(); 
@@ -191,7 +191,7 @@ class _SurveyReopenState extends State<SurveyReopen> {
     String status = widget.status;
     String geolocation = widget.geolocation;
 
-    UserProfile userprofile = widget.userprofile!;
+    UserProfile userprofile = widget.userprofile;
 
     
     
@@ -441,10 +441,11 @@ class _SurveyReopenState extends State<SurveyReopen> {
 
                       setState(() {
                          dateController.text = formattedDate.toString(); 
-                        _date = formattedDate.toString();//set foratted date to TextField value. 
+                        date = formattedDate.toString();//set foratted date to TextField value. 
                     });
                   }
                   else{
+                    _date = date;
                     print("date is not selected");
                   }},
                  
@@ -504,7 +505,8 @@ class _SurveyReopenState extends State<SurveyReopen> {
 
                       setState(() {
                         timeinput.text = formattedTime.toString();
-                        _time =  formattedTime.toString();//set the value of text field. 
+                        //_time =  formattedTime.toString();//set the value of text field. 
+                        time = formattedTime.toString();
                       });
                   }else{
                       print("Time is not selected");
@@ -569,23 +571,23 @@ class _SurveyReopenState extends State<SurveyReopen> {
                           (states) => Colors.black12,
                         ),
                       ),
-                      onPressed: null,
-                  /*onPressed: () {
+                     // onPressed: null,
+                  onPressed: () {
                     _getCurrentPosition();
                     if (_formKey.currentState!.validate()) {
                       // Save the form data before navigating to the next screen
                       _formKey.currentState!.save();
                       //String id = DateTime.now().millisecondsSinceEpoch.toString() ;
-                      createSurveyModel(profile.id, _name!, _email!, _phoneNumber!,_address!, _propertyType!, _date!, _time!, _message!, 'complete');
+                      createSurveyModel(profile.id, _name!, _email!, _phoneNumber!,_address!, _propertyType!, date, time, _message!, 'incomplete');
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => SurveyDataCollect(final_address: _currentAddress),
+                          builder: (context) => SurveyDataCollect(final_address: _currentAddress, profileId: userprofile),
                         ),
                         
                       );
                     }
-                  },*/
+                  },
                   child: Text(
                         "Begin Survey!",
                         style: kButtonText.copyWith(color: Colors.blue, fontSize: 20.0,fontWeight: FontWeight.bold),
