@@ -67,7 +67,7 @@ class _SignInPageState extends State<SignInPage> {
               controller: usernameOrEmailController,
               decoration: InputDecoration(
                   contentPadding: EdgeInsets.all(20),
-                  hintText: "USER NAME / EMAIL ADDRESS",
+                  hintText: "EMAIL ADDRESS",
                   hintStyle: kBodyText,
                   enabledBorder: OutlineInputBorder(
                     borderSide: BorderSide(

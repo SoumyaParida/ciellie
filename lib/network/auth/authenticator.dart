@@ -29,6 +29,28 @@ class Authenticator {
     final isEmailInputted = Validator.validateEmail(usernameOrEmail) == null;
 
     final String email, username;
+    final userFindingResult;
+
+    if (isEmailInputted){
+      userFindingResult = await _dbHelper.findUserByEmail(usernameOrEmail);
+    }
+    else{
+      userFindingResult = null;
+    }
+
+    if (userFindingResult is Success<User>) {
+      username = userFindingResult.data.username;
+      email = userFindingResult.data.email;
+    } else
+      return userFindingResult as Error<User>;
+
+    return await _loginWithEmailAndPassword(username, email, password);
+  }
+
+  /*Future<Result<User>> login(String usernameOrEmail, String password) async {
+    final isEmailInputted = Validator.validateEmail(usernameOrEmail) == null;
+
+    final String email, username;
 
     final userFindingResult = isEmailInputted
         ? await _dbHelper.findUserByEmail(usernameOrEmail)
@@ -41,7 +63,7 @@ class Authenticator {
       return userFindingResult as Error<User>;
 
     return await _loginWithEmailAndPassword(username, email, password);
-  }
+  }*/
 
   Future<Result<User>> _loginWithEmailAndPassword(
       String username, String email, String password) async {
@@ -73,10 +95,10 @@ class Authenticator {
 
   Future<Result<User>> signup(
       String username, String email, String password) async {
-    final userFindingResult = await _dbHelper.findUserByUsername(username);
+    /*final userFindingResult = await _dbHelper.findUserByUsername(username);
     if (userFindingResult is Success<User>) {
       return Error(AuthException.usernameAlreadyInUse);
-    }
+    }*/
     return await _signupWithEmailAndPassword(username, email, password);
   }
 
