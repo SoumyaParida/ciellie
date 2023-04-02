@@ -40,7 +40,7 @@ class _AppDataCollectState extends State<AppDataCollect> {
     });
   }
 
-    Future<void> saveImageInfirestore(String id, List<File> images, String title) async {
+Future<void> saveImageInfirestore(String id, List<File> images, String title) async {
       print(id);
       for (int i = 0; i < images.length; i++) {
         File imagePath = images[i];
@@ -48,12 +48,27 @@ class _AppDataCollectState extends State<AppDataCollect> {
         Reference ref = FirebaseStorage.instance.ref()
                     .child(title).child(id)
                     .child('profile_${i}.jpg');
+        //if (imagePath.existsSync()) imagePath = await imagePath.create();
         UploadTask uploadTask = ref.putFile(imagePath);
         final snapshottask = await uploadTask.whenComplete(() => null);
         final imageUrl = await snapshottask.ref.getDownloadURL();
         print("imageUrl{$imageUrl}");
       }
   }
+
+  /*Future<void> saveImageInfirestore(String id, File imagePath) async {
+    final metadata = SettableMetadata(contentType: "image/jpeg");
+    Reference ref = FirebaseStorage.instance.ref()
+                .child("attic")
+                .child('profile_${id}.jpg');
+    UploadTask uploadTask = ref.putFile(imagePath);
+    final snapshottask = await uploadTask.whenComplete(() => null);
+    final imageUrl = await snapshottask.ref.getDownloadURL();
+    print("imageUrl{$imageUrl}");
+    final result=_db.collection("profiles").doc(id).update({"image":imageUrl});
+    print("result{$result}");
+    return;
+  }*/
 
   loadImageFromPreferences() {
     Utility.getImageFromPreferences().then((img) {
@@ -178,6 +193,8 @@ class _AppDataCollectState extends State<AppDataCollect> {
                 SizedBox(height: 20,),
                   ElevatedButton(
               onPressed: () async {
+                //user = user.copy(imagePath: newImage.path));
+                      
                 await saveImageInfirestore(profile.id, imagePaths, title);
                 Navigator.push(
                   context,
@@ -209,18 +226,24 @@ class _AppDataCollectState extends State<AppDataCollect> {
   }
 
   Future<void> selectImage() async {
-    final XFile? selected_image = 
+
+    final image = await ImagePicker()
+                          .pickImage(source: ImageSource.gallery);
+
+    if (image == null) return;
+
+    final location = await getApplicationDocumentsDirectory();
+    final name = image.path.split('/').last;
+    final imageFile = File('${location.path}/$name');
+                      
+
+    /*final XFile? selected_image = 
           await _picker.pickImage(source: ImageSource.gallery);
     if(selected_image!.path.isNotEmpty){
       _imageList.add(selected_image);
-
-      //if (image == null) return;
-
-      final location = await getApplicationDocumentsDirectory();
-      final name = selected_image.path.split('/').last;
-      final imageFile = File('${location.path}/$name');
+    */
       imagePaths.add(imageFile);
-    } 
+    
     //print(selected_image!.path.toString());
     setState((){});
   }
