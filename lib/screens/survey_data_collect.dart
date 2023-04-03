@@ -8,12 +8,14 @@ import 'package:Ciellie/network/db/db_helper.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'home_page.dart';
+import 'package:Ciellie/models/survey.dart';
 
 class SurveyDataCollect extends StatefulWidget {
   final String final_address;
   final UserProfile profileId;
+  final String uuid;
 
-  const SurveyDataCollect({Key? key, required this.final_address, required this.profileId}) : super(key: key);
+  const SurveyDataCollect({Key? key, required this.final_address, required this.profileId, required this.uuid}) : super(key: key);
 
   @override
   State<SurveyDataCollect> createState() => _SurveyDataCollectState();
@@ -24,6 +26,9 @@ class _SurveyDataCollectState extends State<SurveyDataCollect> {
   late String _finalAddress;
   //late User user;
   final FirebaseFirestore _db = FirebaseFirestore.instance;
+
+  Survey? targetSurvey;
+  List<String> docIDs =[];
 
   final List<String> _details = [
     'Ladder',
@@ -57,6 +62,7 @@ class _SurveyDataCollectState extends State<SurveyDataCollect> {
   Widget build(BuildContext context) {
     final address = widget.final_address;
     final profile = widget.profileId;
+    String uuid = widget.uuid;
     print("address{$address}");
     return Scaffold(
       appBar: AppBar(
@@ -100,7 +106,7 @@ class _SurveyDataCollectState extends State<SurveyDataCollect> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => TrussInfoPage(profile: profile, address: address),
+                            builder: (context) => TrussInfoPage(profile: profile, address: address, uuid: uuid),
                           ),
                         );
                       },
@@ -144,7 +150,7 @@ class _SurveyDataCollectState extends State<SurveyDataCollect> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => AppDataCollect(userprofile: profile, address: address, title: "Electrical"),
+                            builder: (context) => AppDataCollect(userprofile: profile, address: address, title: "Electrical", uuid: uuid),
                           ),
                         );
                       },
@@ -187,7 +193,7 @@ class _SurveyDataCollectState extends State<SurveyDataCollect> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => AppDataCollect(userprofile: profile, address: address, title: "Appliances"),
+                            builder: (context) => AppDataCollect(userprofile: profile, address: address, title: "Appliances", uuid: uuid),
                           ),
                         );
                       },
@@ -230,7 +236,7 @@ class _SurveyDataCollectState extends State<SurveyDataCollect> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => AppDataCollect(userprofile: profile, address: address, title: "Roof"),
+                            builder: (context) => AppDataCollect(userprofile: profile, address: address, title: "Roof", uuid: uuid),
                           ),
                         );
                       },
@@ -273,7 +279,7 @@ class _SurveyDataCollectState extends State<SurveyDataCollect> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => AppDataCollect(userprofile: profile, address: address, title: "ExtraDetails"),
+                            builder: (context) => AppDataCollect(userprofile: profile, address: address, title: "ExtraDetails", uuid: uuid),
                           ),
                         );
                       },
@@ -285,6 +291,7 @@ class _SurveyDataCollectState extends State<SurveyDataCollect> {
               SizedBox(height: 20.0),
               ElevatedButton(
               onPressed: () async {
+                getScheduledDocIds(profile.id, uuid);
                 User? user = await getUser(profile.id);
                 Navigator.push(
                   context,
@@ -342,4 +349,36 @@ class _SurveyDataCollectState extends State<SurveyDataCollect> {
       ),
     );
   }
+
+  Future getScheduledDocIds(String profileId, String uuid) async{
+    await _db.collection("surveys").doc(profileId).collection("survey").get().then(
+      (snapshot) => snapshot.docs.forEach((element) async { 
+        print(element.reference);
+        final snapshot =
+                  await _db.collection("surveys").doc(profileId).collection("survey").doc(element.reference.id).get();
+        var surveyValues = snapshot.data();
+        targetSurvey =  Survey.fromJson(surveyValues!);
+        if (targetSurvey!.id == uuid)
+        {
+             await _db.collection("surveys").doc(profileId).collection("survey").doc(element.reference.id).update({"status":"completed"});
+        }
+        
+      }),
+    );
+  }
+
+  /*Future<void> updatSurveyModel(String profileId, String uuid) async {
+    print("done uuid{$uuid}");
+    
+    final snapshot =
+        await _db.collection("surveys").doc(profileId).collection("survey").docs().where("id", isEqualTo: uuid).get();
+    if (snapshot.docs.isNotEmpty){
+      
+      
+      await _db.collection("profiles").doc(profileId).collection("survey").doc(uuid).update({"status":"completed"});
+    }
+      //final userProfileToCreate = Survey(id: id, name: name, email: email, phone:phone ,address: address,
+      //                                propertyType: propertyType,  date: date, time: time,message:message,geolocation: _currentAddress ,status: status);
+      //await _dbHelper.createSurvey(userProfileToCreate);
+  }*/
 }

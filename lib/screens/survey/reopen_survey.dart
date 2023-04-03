@@ -36,6 +36,7 @@ class SurveyReopen extends StatefulWidget {
   final String geolocation;
   final String status;
   final UserProfile? userprofile;
+  final String uuid;
 
   const SurveyReopen({Key? key, required this.documentId ,
                                 required this.profileId,
@@ -50,6 +51,7 @@ class SurveyReopen extends StatefulWidget {
                                 required this.status,
                                 required this.geolocation,
                                 required this.userprofile,
+                                required this.uuid,
                       }) : super(key: key);
 
   @override
@@ -599,13 +601,6 @@ class _SurveyReopenState extends State<SurveyReopen> {
         ),
       ),
     );
-  }
-  
-  Future<void> createSurveyModel( String id, String name, String email, String phone, String address, String propertyType, 
-                        String date, String time, String message, String status) async {
-    final userProfileToCreate = Survey(id: id, name: name, email: email, phone:phone ,address: address,
-                                      propertyType: propertyType,  date: date, time: time,message:message,geolocation: _currentAddress ,status: status);
-      await _dbHelper.createSurvey(userProfileToCreate);
   }
 }
 

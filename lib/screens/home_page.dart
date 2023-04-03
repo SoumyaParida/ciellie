@@ -201,7 +201,7 @@ class _MyHomePageScreenState extends State<MyHomePage> with TickerProviderStateM
                   Tab(child: Text("surveys", style: TextStyle(color: Colors.black)),),
                   Tab(child: Text("scheduled", style: TextStyle(color: Colors.black)),),
                   Tab(child: Text("incomplete", style: TextStyle(color: Colors.black)),),
-                  Tab(child: Text("complted", style: TextStyle(color: Colors.black)),),
+                  Tab(child: Text("completed", style: TextStyle(color: Colors.black)),),
                 ],
               ),
             ),
@@ -233,6 +233,7 @@ class _MyHomePageScreenState extends State<MyHomePage> with TickerProviderStateM
                                       MaterialPageRoute(builder: (context) =>
                                           SurveyReopen(documentId: docIDs[index], 
                                                       profileId: profile,
+                                                      uuid: surveyItmes!.id,
                                                       name: surveyItmes!.name,
                                                       email: surveyItmes!.email,
                                                       phone: surveyItmes!.phone,
@@ -276,6 +277,7 @@ class _MyHomePageScreenState extends State<MyHomePage> with TickerProviderStateM
                                       MaterialPageRoute(builder: (context) =>
                                           SchduledSurveyReopen(documentId: scheduled_docIDs[index], 
                                                       profileId: profile,
+                                                      uuid: surveyScheduledItmes!.id,
                                                       name: surveyScheduledItmes!.name,
                                                       email: surveyScheduledItmes!.email,
                                                       phone: surveyScheduledItmes!.phone,
@@ -319,6 +321,7 @@ class _MyHomePageScreenState extends State<MyHomePage> with TickerProviderStateM
                                       MaterialPageRoute(builder: (context) =>
                                           SchduledSurveyReopen(documentId: incomplete_docIDs[index], 
                                                       profileId: profile,
+                                                      uuid: surveyIncompleteItmes!.id,
                                                       name: surveyIncompleteItmes!.name,
                                                       email: surveyIncompleteItmes!.email,
                                                       phone: surveyIncompleteItmes!.phone,
@@ -362,6 +365,7 @@ class _MyHomePageScreenState extends State<MyHomePage> with TickerProviderStateM
                                       MaterialPageRoute(builder: (context) =>
                                           SurveyReopen(documentId: completed_docIDs[index], 
                                                       profileId: profile,
+                                                      uuid: surveyCompletedItmes!.id,
                                                       name: surveyCompletedItmes!.name,
                                                       email: surveyCompletedItmes!.email,
                                                       phone: surveyCompletedItmes!.phone,
@@ -417,7 +421,7 @@ class _MyHomePageScreenState extends State<MyHomePage> with TickerProviderStateM
         var surveyValues = snapshot.data();
         targetScheduledSurvey =  Survey.fromJson(surveyValues!);
         
-        if (DateTime.parse(targetScheduledSurvey!.date).isAfter(DateTime.now())){
+        if ((DateTime.parse(targetScheduledSurvey!.date).isAfter(DateTime.now())) && (targetScheduledSurvey!.status != "completed")){
               scheduled_docIDs.add(element.reference.id);
           }
       }),
@@ -449,7 +453,7 @@ class _MyHomePageScreenState extends State<MyHomePage> with TickerProviderStateM
         var surveyValues = snapshot.data();
         targetCompletedSurvey =  Survey.fromJson(surveyValues!);
         
-        if (targetCompletedSurvey!.status == 'complete'){
+        if (targetCompletedSurvey!.status == 'completed'){
               complete_docIDs.add(element.reference.id);
           }
       }),

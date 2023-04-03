@@ -15,7 +15,8 @@ class AppDataCollect extends StatefulWidget {
   final UserProfile userprofile;
   final String address;
   final String title;
-  AppDataCollect({required this.userprofile, required this.address, required this.title});
+  final String uuid;
+  AppDataCollect({required this.userprofile, required this.address, required this.title, required this.uuid});
 
   @override
   State<AppDataCollect> createState() => _AppDataCollectState();
@@ -44,13 +45,13 @@ class _AppDataCollectState extends State<AppDataCollect> {
   }
   
 
-    Future<void> saveImageInfirestore(String id, List<File> images, String title) async {
+    Future<void> saveImageInfirestore(String id, List<File> images, String title, String uuid) async {
       print(id);
       for (int i = 0; i < images.length; i++) {
         File imagePath = images[i];
         final metadata = SettableMetadata(contentType: "image/jpeg");
         Reference ref = FirebaseStorage.instance.ref()
-                    .child(title).child(id)
+                    .child(title).child(id).child(uuid)
                     .child('profile_${i}.jpg');
         UploadTask uploadTask = ref.putFile(imagePath);
         final snapshottask = await uploadTask.whenComplete(() => null);
@@ -102,6 +103,7 @@ class _AppDataCollectState extends State<AppDataCollect> {
     UserProfile profile = widget.userprofile;
     String address = widget.address;
     String title = widget.title;
+    String uuid = widget.uuid;
     return Scaffold(
       appBar: AppBar(
         title: Text(title),
@@ -182,11 +184,11 @@ class _AppDataCollectState extends State<AppDataCollect> {
                 SizedBox(height: 20,),
                   ElevatedButton(
               onPressed: () async {
-                await saveImageInfirestore(profile.id, imagePaths, title);
+                await saveImageInfirestore(profile.id, imagePaths, title, uuid);
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => SurveyDataCollect(profileId: profile, final_address: address),
+                    builder: (context) => SurveyDataCollect(profileId: profile, final_address: address, uuid: uuid),
                   ),
                 );
               },

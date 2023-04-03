@@ -6,8 +6,9 @@ import '../models/profile.dart';
 class TrussInfoPage extends StatefulWidget {
   final UserProfile profile;
   final String address;
+  final String uuid;
 
-  TrussInfoPage({required this.profile, required this.address});
+  TrussInfoPage({required this.profile, required this.address, required this.uuid});
   @override
   _TrussInfoPageState createState() => _TrussInfoPageState();
 }
@@ -17,6 +18,7 @@ class _TrussInfoPageState extends State<TrussInfoPage>{
   Widget build(BuildContext context) {
     UserProfile userprofile = widget.profile;
     String address = widget.address;
+    String uuid = widget.uuid;
     return Scaffold(
       appBar: AppBar(
         title: Text('Truss Info'),
@@ -60,7 +62,7 @@ You will be taking images and measurements of the truss/rafters.
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => AppDataCollect(userprofile: userprofile, address: address, title: "Attic"),
+                    builder: (context) => AppDataCollect(userprofile: userprofile, address: address, title: "Attic", uuid: uuid),
                   ),
                 );
               },

@@ -17,6 +17,8 @@ import 'package:geolocator/geolocator.dart';
 
 import 'package:Ciellie/network/db/db_helper.dart';
 
+import 'package:uuid/uuid.dart';
+
 class SurveyDetails extends StatefulWidget {
   final UserProfile? userProfile;
   const SurveyDetails({Key? key, required this.userProfile}) : super(key: key);
@@ -34,6 +36,7 @@ class _SurveyDetailsState extends State<SurveyDetails> {
 
   String _currentAddress = "";
   Position? _currentPosition;
+  late String uid;
 
   Future<bool> _handleLocationPermission() async {
     bool serviceEnabled;
@@ -497,11 +500,13 @@ class _SurveyDetailsState extends State<SurveyDetails> {
                       // Save the form data before navigating to the next screen
                       _formKey.currentState!.save();
                       //String id = DateTime.now().millisecondsSinceEpoch.toString() ;
-                      createSurveyModel(profile.id, _name!, _email!, _phoneNumber!,_address!, _propertyType!, _date!, _time!, _message!,_currentAddress ,'incomplete');
+                      createSurveyModel(profile.id, _name!, _email!, _phoneNumber!,_address!, _propertyType!, 
+                        _date!, _time!, _message!,_address!,'incomplete');
+                        print("uuid{$uid}");
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => SurveyDataCollect(final_address: _currentAddress, profileId: profile),
+                          builder: (context) => SurveyDataCollect(final_address: _currentAddress, profileId: profile, uuid: uid),
                         ),
                         
                       );
@@ -524,10 +529,11 @@ class _SurveyDetailsState extends State<SurveyDetails> {
   
   Future<void> createSurveyModel( String id, String name, String email, String phone, String address, String propertyType, 
                         String date, String time, String message, String _currentAddress, String status) async {
-    
-    final userProfileToCreate = Survey(id: id, name: name, email: email, phone:phone ,address: address,
+    var uuid = Uuid();
+    uid = uuid.v1();
+    final userProfileToCreate = Survey(id: uid, name: name, email: email, phone:phone ,address: address,
                                       propertyType: propertyType,  date: date, time: time,message:message,geolocation: _currentAddress ,status: status);
-      await _dbHelper.createSurvey(userProfileToCreate);
+      await _dbHelper.createSurvey(id, userProfileToCreate);
   }
 }
 

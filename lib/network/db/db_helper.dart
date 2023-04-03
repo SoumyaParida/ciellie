@@ -108,10 +108,10 @@ class DbHelper {
         .set({'id': userData.id, 'name': userData.name, 'email': userData.email, 'phone': userData.phone, 'image': userData.image});
   }
   
-  Future<void> createSurvey(Survey userSurevey) async {
+  Future<void> createSurvey(String id ,Survey userSurevey) async {
     await _db
         .collection("surveys")
-        .doc(userSurevey.id)
+        .doc(id)
         .collection("survey")
         .doc()
         .set({'id': userSurevey.id, 'name': userSurevey.name, 'email': userSurevey.email, 

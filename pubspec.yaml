@@ -51,6 +51,7 @@ dependencies:
   image:
   get: ^4.6.5
   firebase_storage: 
+  uuid: ^3.0.7
   
 
 dev_dependencies:

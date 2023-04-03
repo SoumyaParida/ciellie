@@ -36,6 +36,7 @@ class SchduledSurveyReopen extends StatefulWidget {
   final String geolocation;
   final String status;
   final UserProfile? userprofile;
+  final String uuid;
 
   const SchduledSurveyReopen({Key? key, required this.documentId ,
                                 required this.profileId,
@@ -50,6 +51,7 @@ class SchduledSurveyReopen extends StatefulWidget {
                                 required this.status,
                                 required this.geolocation,
                                 required this.userprofile,
+                                required this.uuid,
                       }) : super(key: key);
 
   @override
@@ -192,6 +194,7 @@ class _SchduledSurveyReopenState extends State<SchduledSurveyReopen> {
     String geolocation = widget.geolocation;
 
     UserProfile userprofile = widget.userprofile!;
+     String uuid = widget.uuid;
 
     
     
@@ -578,11 +581,11 @@ class _SchduledSurveyReopenState extends State<SchduledSurveyReopen> {
                       // Save the form data before navigating to the next screen
                       _formKey.currentState!.save();
                       //String id = DateTime.now().millisecondsSinceEpoch.toString() ;
-                      createSurveyModel(profile.id, _name!, _email!, _phoneNumber!,_address!, _propertyType!, date, time, _message!, 'incomplete');
+                      updatSurveyModel(docId, profile.id, _name!, _email!, _phoneNumber!,_address!, _propertyType!, date, time, _message!, 'incomplete');
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => SurveyDataCollect(final_address: _currentAddress, profileId: userprofile),
+                          builder: (context) => SurveyDataCollect(final_address: _currentAddress, profileId: userprofile, uuid: uuid),
                         ),
                         
                       );
@@ -603,11 +606,27 @@ class _SchduledSurveyReopenState extends State<SchduledSurveyReopen> {
     );
   }
   
-  Future<void> createSurveyModel( String id, String name, String email, String phone, String address, String propertyType, 
+  Future<void> updatSurveyModel(String docID ,String id, String name, String email, String phone, String address, String propertyType, 
                         String date, String time, String message, String status) async {
-    final userProfileToCreate = Survey(id: id, name: name, email: email, phone:phone ,address: address,
-                                      propertyType: propertyType,  date: date, time: time,message:message,geolocation: _currentAddress ,status: status);
-      await _dbHelper.createSurvey(userProfileToCreate);
+    print("docID{$docID}");
+    
+    final snapshot =
+        await _db.collection("surveys").doc(id).collection("survey").where("id", isEqualTo: docID).get();
+    if (snapshot.docs.isNotEmpty){
+      final userProfileToCreate = { name: name, email: email, 
+                                    phone:phone ,address: address,
+                                    propertyType: propertyType,  
+                                    date: date, 
+                                    time: time,
+                                    message:message,
+                                    status: status
+                                  };
+      
+      await _db.collection("profiles").doc(id).collection("survey").doc(id).update(userProfileToCreate);
+    }
+      //final userProfileToCreate = Survey(id: id, name: name, email: email, phone:phone ,address: address,
+      //                                propertyType: propertyType,  date: date, time: time,message:message,geolocation: _currentAddress ,status: status);
+      //await _dbHelper.createSurvey(userProfileToCreate);
   }
 }
 
