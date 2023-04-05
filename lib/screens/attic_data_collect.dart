@@ -216,7 +216,7 @@ class _AppDataCollectState extends State<AppDataCollect> {
 
   Future<void> selectImage() async {
     final XFile? selected_image = 
-          await _picker.pickImage(source: ImageSource.gallery);
+          await _picker.pickImage(source: ImageSource.camera);
     if(selected_image!.path.isNotEmpty){
       _imageList.add(selected_image);
 
