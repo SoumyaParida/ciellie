@@ -2,9 +2,6 @@ import 'package:Ciellie/screens/survey_data_collect.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
-//import 'Utility.dart';
-import 'package:Ciellie/util/Utility.dart';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:path_provider/path_provider.dart';
@@ -26,6 +23,8 @@ class _AppDataCollectState extends State<AppDataCollect> {
   Future<File>? imageFile;
   Image? imageFromPreferences;
   bool _load = false;
+  bool isLoading = false;
+  
 
   final ImagePicker _picker = ImagePicker();
   List<XFile> _imageList = [];
@@ -60,45 +59,7 @@ class _AppDataCollectState extends State<AppDataCollect> {
       }
   }
 
-  loadImageFromPreferences() {
-    Utility.getImageFromPreferences().then((img) {
-      if (null == img) {
-        return;
-      }
-      setState(() {
-        imageFromPreferences = Utility.imageFromBase64String(img);
-      });
-    });
-  }
 
-  Widget imageFromGallery() {
-    return FutureBuilder<File>(
-      future: imageFile,
-      builder: (BuildContext context, AsyncSnapshot<File> snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-          if (null == snapshot.data) {
-            return const Text(
-              "Error",
-              textAlign: TextAlign.center,
-            );
-          }
-          Utility.saveImageToPreferences(
-              Utility.base64String(snapshot.data!.readAsBytesSync()));
-          return Image.file(snapshot.data!);
-        }
-        if (null != snapshot.error) {
-          return const Text(
-            'Error Picking Image',
-            textAlign: TextAlign.center,
-          );
-        }
-        return const Text(
-          'No Image Selected',
-          textAlign: TextAlign.center,
-        );
-      },
-    );
-  }
   Widget build(BuildContext context) {
     UserProfile profile = widget.userprofile;
     String address = widget.address;
@@ -107,23 +68,6 @@ class _AppDataCollectState extends State<AppDataCollect> {
     return Scaffold(
       appBar: AppBar(
         title: Text(title),
-        /*actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.add),
-            onPressed: () {
-              pickImageFromGallery(ImageSource.gallery);
-              setState(() {
-                imageFromPreferences;
-              });
-            },
-          ),
-          IconButton(
-            icon: Icon(Icons.refresh),
-            onPressed: () {
-              loadImageFromPreferences();
-            },
-          ),
-        ],*/
       ),
       body: SafeArea(
         child: 
@@ -184,7 +128,15 @@ class _AppDataCollectState extends State<AppDataCollect> {
                 SizedBox(height: 20,),
                   ElevatedButton(
               onPressed: () async {
+                //setState(() { _isLoading = true });//show loader
+                showDialog(
+                  context: context, 
+                  builder: (context) {
+                    return Center(child: CircularProgressIndicator());
+                  },
+                );
                 await saveImageInfirestore(profile.id, imagePaths, title, uuid);
+                //setState(() { _isLoading = false });//hide loader
                 Navigator.push(
                   context,
                   MaterialPageRoute(

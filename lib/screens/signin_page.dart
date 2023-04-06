@@ -191,6 +191,12 @@ class _SignInPageState extends State<SignInPage> {
   }
 
   Future onClickButton(BuildContext context) async {
+    showDialog(
+      context: context, 
+      builder: (context) {
+        return Center(child: CircularProgressIndicator());
+      },
+    );
     final result = await authenticator.login(
         usernameOrEmailController.text.trim(), passwordController.text);
     if (result is Success<User>) {
@@ -199,6 +205,8 @@ class _SignInPageState extends State<SignInPage> {
     } else {
       context.alertError(result);
     }
+
+    //Navigator.of(context).pop();
     //await Future.delayed(const Duration(seconds: 1), () {});
   }
 

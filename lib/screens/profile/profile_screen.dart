@@ -141,6 +141,12 @@ class _ProfilePageState extends State<ProfilePage> {
                   ))),
           InkWell(
               onTap: () async {
+                showDialog(
+                  context: context, 
+                  builder: (context) {
+                    return Center(child: CircularProgressIndicator());
+                  },
+                );
                       final image = await ImagePicker()
                           .pickImage(source: ImageSource.gallery);
 
@@ -155,7 +161,9 @@ class _ProfilePageState extends State<ProfilePage> {
                           () => profile.image = newImage.path); //user = user.copy(imagePath: newImage.path));
                       
                     await saveImageInfirestore(imageFile);
+                    Navigator.of(context).pop();
                                          },
+                              
               
               /*child: DisplayImage(
                 imagePath: profile.image != "" ? profile.image : "https://upload.wikimedia.org/wikipedia/en/0/0b/Darth_Vader_in_The_Empire_Strikes_Back.jpg",
@@ -173,6 +181,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     child: DisplayImage(
                       imagePath: data,
                       onPressed: (){
+                        
                         //setState(() {});
                       },
                       
