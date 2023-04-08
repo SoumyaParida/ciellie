@@ -203,6 +203,7 @@ class _SignInPageState extends State<SignInPage> {
       final loggedInUser = result.data;
       onLogin(context, loggedInUser);
     } else {
+      Navigator.of(context).pop();
       context.alertError(result);
     }
 
