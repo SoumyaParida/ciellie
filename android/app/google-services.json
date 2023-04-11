@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "854485873054",
+    "firebase_url": "https://ciellie-default-rtdb.firebaseio.com",
     "project_id": "ciellie",
     "storage_bucket": "ciellie.appspot.com"
   },
@@ -14,7 +15,7 @@
       },
       "oauth_client": [
         {
-          "client_id": "854485873054-6689j5fgruqe7isv3orsjpv2nedn6itc.apps.googleusercontent.com",
+          "client_id": "854485873054-vecmd3c86m58mjtggrjodotvjqii4arm.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
@@ -29,6 +30,13 @@
             {
               "client_id": "854485873054-6689j5fgruqe7isv3orsjpv2nedn6itc.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "854485873054-bbiaseo6mhida21uqbd63m9ivc56t2h0.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.Ciellie"
+              }
             }
           ]
         }

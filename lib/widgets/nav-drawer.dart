@@ -199,7 +199,7 @@ class _NavDrawerScreenState extends State<NavDrawer> {
         Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) =>  MyHomePage(currentuser: user),
         )),
       ),
-      ListTile(
+      /*ListTile(
         leading: const Icon(Icons.workspaces_outline),
         title: const Text("Teams"),
         onTap: () {
@@ -207,7 +207,7 @@ class _NavDrawerScreenState extends State<NavDrawer> {
         Navigator.of(context).push(MaterialPageRoute(builder: (context) => MyTeamsPage(),
       ));
       },
-      ),
+      ),*/
       ListTile(
         leading: const Icon(Icons.map_outlined),
         title: const Text("Maps"),
