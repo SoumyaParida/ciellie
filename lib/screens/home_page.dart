@@ -242,7 +242,6 @@ class _MyHomePageScreenState extends State<MyHomePage> with TickerProviderStateM
                                                       date: surveyItmes!.date,
                                                       time: surveyItmes!.time,
                                                       message: surveyItmes!.message,
-                                                      geolocation: surveyItmes!.geolocation,
                                                       status: surveyItmes!.status,
                                                       userprofile: userprofile,
                                         )
@@ -286,7 +285,6 @@ class _MyHomePageScreenState extends State<MyHomePage> with TickerProviderStateM
                                                       date: surveyScheduledItmes!.date,
                                                       time: surveyScheduledItmes!.time,
                                                       message: surveyScheduledItmes!.message,
-                                                      geolocation: surveyScheduledItmes!.geolocation,
                                                       status: surveyScheduledItmes!.status,
                                                       userprofile: userprofile,
                                         )
@@ -330,7 +328,6 @@ class _MyHomePageScreenState extends State<MyHomePage> with TickerProviderStateM
                                                       date: surveyIncompleteItmes!.date,
                                                       time: surveyIncompleteItmes!.time,
                                                       message: surveyIncompleteItmes!.message,
-                                                      geolocation: surveyIncompleteItmes!.geolocation,
                                                       status: surveyIncompleteItmes!.status,
                                                       userprofile: userprofile,
                                         )
@@ -374,7 +371,6 @@ class _MyHomePageScreenState extends State<MyHomePage> with TickerProviderStateM
                                                       date: surveyCompletedItmes!.date,
                                                       time: surveyCompletedItmes!.time,
                                                       message: surveyCompletedItmes!.message,
-                                                      geolocation: surveyCompletedItmes!.geolocation,
                                                       status: surveyCompletedItmes!.status,
                                                       userprofile: userprofile,
                                         )

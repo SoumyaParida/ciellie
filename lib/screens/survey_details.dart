@@ -532,7 +532,7 @@ class _SurveyDetailsState extends State<SurveyDetails> {
     var uuid = Uuid();
     uid = uuid.v1();
     final userProfileToCreate = Survey(id: uid, name: name, email: email, phone:phone ,address: address,
-                                      propertyType: propertyType,  date: date, time: time,message:message,geolocation: _currentAddress ,status: status);
+                                      propertyType: propertyType,  date: date, time: time,message:message,status: status);
       await _dbHelper.createSurvey(id, userProfileToCreate);
   }
 }

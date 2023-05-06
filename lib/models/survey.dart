@@ -12,7 +12,7 @@ class Survey {
   String time;
   String message;
   String id;
-  String geolocation;
+  
   String status;
 
   
@@ -27,7 +27,7 @@ class Survey {
     required this.time,
     required this.message,
     required this.status,
-    required this.geolocation,
+    
   });
 
   Survey copy({
@@ -40,7 +40,7 @@ class Survey {
     String? time,
     String? message,
     String? id,
-    String? geolocation,
+    
     String? status,
   }) =>
       Survey(
@@ -53,11 +53,10 @@ class Survey {
         time: time ?? this.time,
         message: message ?? this.message,
         id: id ?? this.id,
-        geolocation: geolocation?? this.geolocation,
         status: status ?? this.status,
       );
 
-  Survey.fromFirebaseUser(fb_auth.User fbUser, String name, String phone, String address, String propertyType, String date, String time, String message, String geolocation, String status)
+  Survey.fromFirebaseUser(fb_auth.User fbUser, String name, String phone, String address, String propertyType, String date, String time, String message, String status)
       : id = fbUser.uid,
         name = name,
         email = fbUser.email!,
@@ -67,7 +66,6 @@ class Survey {
         date = date,
         time = time,
         message = message,
-        geolocation = geolocation,
         status = status;
 
   factory Survey.fromDocSnapshot(DocumentSnapshot<Map<String, dynamic>> snapshot){
@@ -81,7 +79,6 @@ class Survey {
                   date: data["date"], 
                   time: data["time"], 
                   message: data["message"],
-                  geolocation: data["geolocation"],
                   status: data["status"],
                   );
   }
@@ -96,16 +93,15 @@ class Survey {
         date = json['date'],
         time = json['time'],
         message = json['message'],
-        geolocation = json['geolocation'],
         status = json['status'];
 
   Map<String, dynamic> toJson() =>
       {'id': id, 'name': name, 'email': email, 'phone': phone, 'address':address, 
-      'propertyType':propertyType, 'date':date,'time':time, 'message':message,'geolocation': geolocation, 'status': status};
+      'propertyType':propertyType, 'date':date,'time':time, 'message':message,'status': status};
 
   @override
   String toString() {
-    return 'User{id: $id, username: $name, email: $email, phone: $phone, address: $address,propertyType: $propertyType, date: $date, time: $time, message: $message, geolocation: $geolocation, status: $status}';
+    return 'User{id: $id, username: $name, email: $email, phone: $phone, address: $address,propertyType: $propertyType, date: $date, time: $time, message: $message, status: $status}';
   }
 }
 

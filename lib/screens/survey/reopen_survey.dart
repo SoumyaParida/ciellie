@@ -33,7 +33,6 @@ class SurveyReopen extends StatefulWidget {
   final String date;
   final String time;
   final String message;
-  final String geolocation;
   final String status;
   final UserProfile? userprofile;
   final String uuid;
@@ -49,7 +48,6 @@ class SurveyReopen extends StatefulWidget {
                                 required this.time,
                                 required this.message,
                                 required this.status,
-                                required this.geolocation,
                                 required this.userprofile,
                                 required this.uuid,
                       }) : super(key: key);
@@ -191,7 +189,6 @@ class _SurveyReopenState extends State<SurveyReopen> {
     String time = widget.time;
     String message = widget.message;
     String status = widget.status;
-    String geolocation = widget.geolocation;
 
     UserProfile userprofile = widget.userprofile!;
 

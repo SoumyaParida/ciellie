@@ -49,8 +49,11 @@ class _AppDataCollectState extends State<AppDataCollect> {
       for (int i = 0; i < images.length; i++) {
         File imagePath = images[i];
         final metadata = SettableMetadata(contentType: "image/jpeg");
+        //Reference ref = FirebaseStorage.instance.ref()
+        //            .child(title).child(id).child(uuid)
+        //            .child('profile_${i}.jpg');
         Reference ref = FirebaseStorage.instance.ref()
-                    .child(title).child(id).child(uuid)
+                    .child(id).child(uuid).child(title)
                     .child('profile_${i}.jpg');
         UploadTask uploadTask = ref.putFile(imagePath);
         final snapshottask = await uploadTask.whenComplete(() => null);

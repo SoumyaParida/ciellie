@@ -33,7 +33,6 @@ class SchduledSurveyReopen extends StatefulWidget {
   final String date;
   final String time;
   final String message;
-  final String geolocation;
   final String status;
   final UserProfile? userprofile;
   final String uuid;
@@ -49,7 +48,6 @@ class SchduledSurveyReopen extends StatefulWidget {
                                 required this.time,
                                 required this.message,
                                 required this.status,
-                                required this.geolocation,
                                 required this.userprofile,
                                 required this.uuid,
                       }) : super(key: key);
@@ -100,43 +98,6 @@ class _SchduledSurveyReopenState extends State<SchduledSurveyReopen> {
     return true;
   }
 
-  Future<void> _getCurrentPosition() async {
-    final hasPermission = await _handleLocationPermission();
-
-    if (!hasPermission) return;
-    await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
-        .then((Position position) {
-          print("position{$position}");
-      setState(() => _currentPosition = position);
-      _getAddressFromLatLng(_currentPosition!);
-    }).catchError((e) {
-      debugPrint(e);
-    });
-  }
-
-  Future<void> _getAddressFromLatLng(Position position) async {
-    await placemarkFromCoordinates(
-            _currentPosition!.latitude, _currentPosition!.longitude)
-        .then((List<Placemark> placemarks) {
-      Placemark place = placemarks[0];
-      setState(() {
-        _currentAddress =
-            '${place.street}, ${place.subLocality}, ${place.subAdministrativeArea}, ${place.postalCode}';
-      });
-    }).catchError((e) {
-      debugPrint(e);
-    });
-  }
-
-  /*CollectionReference surveys = FirebaseFirestore.instance.collection("surveys").doc(profileId).collection("survey");
-
-  FutureBuilder<DocumentSnapshot>(
-      future: surveys.doc(documentId).get(),
-      builder: ((context, snapshot){
-        if (snapshot.connectionState == ConnectionState.done) {
-        Map<String, dynamic> data = 
-                    snapshot.data!.data() as Map<String, dynamic>;}
-  */
   String? _name;
   String? _email;
   String? _phoneNumber;
@@ -191,7 +152,6 @@ class _SchduledSurveyReopenState extends State<SchduledSurveyReopen> {
     String time = widget.time;
     String message = widget.message;
     String status = widget.status;
-    String geolocation = widget.geolocation;
 
     UserProfile userprofile = widget.userprofile!;
      String uuid = widget.uuid;
@@ -576,7 +536,6 @@ class _SchduledSurveyReopenState extends State<SchduledSurveyReopen> {
                       ),
                      // onPressed: null,
                   onPressed: () {
-                    _getCurrentPosition();
                     if (_formKey.currentState!.validate()) {
                       // Save the form data before navigating to the next screen
                       _formKey.currentState!.save();

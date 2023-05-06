@@ -118,6 +118,6 @@ class DbHelper {
         'phone': userSurevey.phone, 'address': userSurevey.address,
         'propertyType': userSurevey.propertyType, 'date': userSurevey.date,
         'time': userSurevey.time, 'message': userSurevey.message, 
-        'geolocation': userSurevey.geolocation,'status': userSurevey.status });
+        'status': userSurevey.status });
   }
 }
